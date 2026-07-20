@@ -97,10 +97,13 @@ wrong workspace appears, a stale environment variable is the reason.
 
 The step that justifies doing this in a terminal. Work in their actual codebase.
 
-1. **Read their workspace config.** `GET https://data.fullvision.io/workspace` with
-   `Authorization: Bearer $FULLVISION_API_KEY` returns the site config. You need their
-   publishable `pk_` key for the snippet — it is on the same API-keys page, and unlike the
-   `sk_` it is safe in client-side HTML.
+1. **Read their workspace config.** `GET https://data.fullvision.io/workspace` returns the
+   site config, authenticated with the credential login already stored. You also need their
+   **publishable** `pk_` key for the snippet — that one lives at
+   https://app.fullvision.io/setup/data-sync/web-tracker, alongside the current inline stub.
+
+   `pk_` is the only FullVision key that belongs in client-side HTML. It is not the key
+   `fv-login` stored, and the two are not interchangeable in either direction.
 2. **Detect the framework, and check it is not already installed.** Look for `next.config.*`,
    `nuxt.config.*`, `svelte.config.*`, `astro.config.*`, `app/layout.tsx`, `index.html`, a
    Webflow/WordPress export, or a plain static site. Name what you found before editing.
