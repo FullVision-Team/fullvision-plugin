@@ -30,7 +30,8 @@ Read `shared/reading-fullvision-data.md`, `shared/safety-rails.md` and
    volume. Require a second signal per candidate: no assisted conversions in any attribution
    model (`view:ltv-by-campaign`), or engaged-session rate far below the account baseline
    (`view:ad-landing-pages`). Drop candidates that fail corroboration into "Not proposed".
-6. **Emit the change-list and STOP.** Do not write in this turn. Ever.
+6. **Emit the change-list, then STOP.** Do not write in this turn. Ever. Two turns, always
+   (`shared/safety-rails.md` §1).
 7. **On confirmation:** write the change log entry first, then add the negative keywords.
 
 ## Thresholds — fixed, never runtime-adjusted
