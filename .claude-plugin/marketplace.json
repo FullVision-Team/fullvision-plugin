@@ -1,0 +1,15 @@
+{
+  "name": "fullvision-plugin",
+  "description": "The FullVision plugin: revenue-attributed marketing operations for Claude Code, judged on real Stripe revenue.",
+  "owner": {
+    "name": "FullVision",
+    "url": "https://fullvision.io"
+  },
+  "plugins": [
+    {
+      "name": "fullvision",
+      "source": "./",
+      "description": "Revenue-attributed marketing operations: cut wasted ad spend, fix leaky landing pages, build consent-gated audiences — all judged on real Stripe revenue."
+    }
+  ]
+}

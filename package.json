@@ -1,0 +1,16 @@
+{
+  "name": "fullvision-plugin",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "validate": "claude plugin validate --strict ."
+  },
+  "devDependencies": {
+    "vitest": "^3.2.4",
+    "yaml": "^2.8.0"
+  }
+}
