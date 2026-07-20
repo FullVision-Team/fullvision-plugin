@@ -20,7 +20,7 @@ Read `shared/reading-fullvision-data.md`, `shared/safety-rails.md` and
 - **`webflow`** — the site is a Webflow project. Use the `webflow` MCP server for CMS and page
   writes.
 
-`fv-setup` detects which is available. If both are, **ask once** and record the answer in
+`fv-capabilities` detects which is available. If both are, **ask once** and record the answer in
 `.fullvision/config.json` (`{"site_write_target": "github"}`) so later runs do not re-ask.
 If neither is available, run read-only per `shared/safety-rails.md` §9 and emit the change-list
 as a diff or a copy-pasteable content block.
