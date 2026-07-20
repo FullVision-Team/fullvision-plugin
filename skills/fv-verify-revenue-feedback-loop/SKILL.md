@@ -12,7 +12,9 @@ This is the moat skill. Ad platforms optimise toward whatever signal they receiv
 revenue is not reaching them, every other recommendation in this plugin is being undone by
 the platform's own bidding, weekly, silently.
 
-Read `shared/reading-fullvision-data.md` and `shared/sparse-data.md` before calling anything.
+Read `shared/reading-fullvision-data.md` and `shared/sparse-data.md` before calling anything,
+plus `shared/platforms/{google,meta,linkedin}.md` — each platform's loop fails differently and
+those files say how.
 
 ## Steps
 

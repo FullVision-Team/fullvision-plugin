@@ -4,15 +4,19 @@ const skills = loadSkills();
 const writeSkills = skills.filter((s) => s.frontmatter.writes.length > 0);
 
 describe("degradation contract", () => {
-  it("ships the seven v1 skills", () => {
+  it("ships the eleven v0.2 skills", () => {
     expect(skills.map((s) => s.dir).sort()).toEqual([
       "fv-build-audience",
       "fv-cut-wasted-spend",
       "fv-data-health",
+      "fv-design-page-test",
+      "fv-find-keyword-gaps",
       "fv-find-leaky-pages",
       "fv-fix-page",
+      "fv-fix-striking-distance",
       "fv-setup",
       "fv-verify-revenue-feedback-loop",
+      "fv-win-back-churned",
     ]);
   });
 
