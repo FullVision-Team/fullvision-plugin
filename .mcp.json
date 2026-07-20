@@ -1,11 +1,9 @@
 {
   "mcpServers": {
     "fullvision": {
-      "type": "http",
-      "url": "${FULLVISION_MCP_URL:-https://data.fullvision.io/mcp}",
-      "headers": {
-        "Authorization": "Bearer ${FULLVISION_API_KEY}"
-      }
+      "type": "stdio",
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/fv-mcp.mjs"]
     },
     "meta-ads": {
       "type": "http",

@@ -15,9 +15,9 @@ Read `shared/reading-fullvision-data.md` before calling anything.
 
 ## Steps
 
-1. **Probe FullVision.** Call `fullvision:list_views`. If it fails on auth, stop and tell the
-   user to set `FULLVISION_API_KEY` (v1 uses a bearer key; 1-click OAuth ships later). Nothing
-   else in the plugin works without this — it is the only non-optional server.
+1. **Probe FullVision.** Call `fullvision:list_views`. If it fails on auth, stop and point the
+   user at `/fullvision:fv-login` — one click in the browser. Nothing else in the plugin works
+   without this; it is the only non-optional server.
 2. **Probe each other server** by making its cheapest read call. Record connected / not
    connected / errored. Do not treat "not connected" as a failure; most users start with one.
 3. **Run the data-health precondition** — call `fullvision:query_view` on

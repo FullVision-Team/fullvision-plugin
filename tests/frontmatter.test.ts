@@ -1,4 +1,4 @@
-import { loadSkills, mcpServerNames } from "./lib/skills";
+import { loadSkills, mcpServerNames, isAnalysisSkill } from "./lib/skills";
 
 const skills = loadSkills();
 const servers = mcpServerNames();
@@ -40,7 +40,7 @@ describe("skill frontmatter", () => {
     },
   );
 
-  it.each(skills.map((s) => [s.dir, s] as const))(
+  it.each(skills.filter(isAnalysisSkill).map((s) => [s.dir, s] as const))(
     "%s references the shared protocols it is bound by",
     (_dir, skill) => {
       expect(skill.body).toContain("shared/reading-fullvision-data.md");

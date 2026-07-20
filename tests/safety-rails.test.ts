@@ -1,4 +1,4 @@
-import { loadSkills } from "./lib/skills";
+import { loadSkills, isAnalysisSkill } from "./lib/skills";
 
 const skills = loadSkills();
 const writeSkills = skills.filter((s) => s.frontmatter.writes.length > 0);
@@ -15,7 +15,7 @@ describe("safety rails", () => {
     },
   );
 
-  it.each(skills.map((s) => [s.dir, s] as const))(
+  it.each(skills.filter(isAnalysisSkill).map((s) => [s.dir, s] as const))(
     "%s runs fv-data-health as a precondition",
     (_dir, skill) => {
       if (skill.dir === "fv-data-health" || skill.dir === "fv-setup") return;

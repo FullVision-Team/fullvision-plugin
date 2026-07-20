@@ -26,13 +26,18 @@ connected, and names the one thing worth connecting next.
 
 ## Setup
 
-Set your FullVision API key before the first run:
+Connect FullVision:
 
-```bash
-export FULLVISION_API_KEY=sk_…
+```
+/fullvision:fv-login
 ```
 
-(1-click OAuth is coming; v1 uses a bearer key.)
+This opens your browser, you pick a workspace and click Authorize, and the key is saved to
+`~/.fullvision/credentials.json`. It is read-only, expires in 90 days, and is revocable any
+time in FullVision → Settings → API keys.
+
+Prefer to manage the key yourself? Export `FULLVISION_API_KEY=sk_…` instead — it takes
+precedence over the saved credential.
 
 Optional, per server you want to use: `GOOGLE_ADS_DEVELOPER_TOKEN`, `LINKEDIN_ACCESS_TOKEN`,
 `BREVO_API_KEY`. Meta and Webflow authenticate in the browser on first use. You do not need

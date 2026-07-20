@@ -17,7 +17,7 @@ servers hold credentials that can spend customer money.
 
 | Server | Read | Write | Customer auth burden |
 |---|---|---|---|
-| fullvision | 22 tools over 73 views | custom views, funnels | bearer key today; 1-click OAuth planned |
+| fullvision | 22 tools over 73 views | custom views, funnels | 1-click browser login (`/fullvision:fv-login`) |
 | meta-ads | ✅ | ✅ 29 tools | 1-click OAuth |
 | google-ads | ✅ GAQL only | ❌ **read-only by design** | developer token (days) + Python toolchain |
 | linkedin-ads | ✅ | ✅ | own dev app + LinkedIn app review (weeks) |
