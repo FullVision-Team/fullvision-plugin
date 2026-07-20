@@ -101,9 +101,14 @@ The step that justifies doing this in a terminal. Work in their actual codebase.
    `Authorization: Bearer $FULLVISION_API_KEY` returns the site config. You need their
    publishable `pk_` key for the snippet — it is on the same API-keys page, and unlike the
    `sk_` it is safe in client-side HTML.
-2. **Detect the framework.** Look for `next.config.*`, `nuxt.config.*`, `svelte.config.*`,
-   `astro.config.*`, `app/layout.tsx`, `index.html`, a Webflow/WordPress export, or a plain
-   static site. Name what you found before editing anything.
+2. **Detect the framework, and check it is not already installed.** Look for `next.config.*`,
+   `nuxt.config.*`, `svelte.config.*`, `astro.config.*`, `app/layout.tsx`, `index.html`, a
+   Webflow/WordPress export, or a plain static site. Name what you found before editing.
+
+   **Grep for an existing tracker first** (`t.js`, `fv_visitor_id`, `data-key="pk_`). Users
+   re-run this skill, and a second snippet double-counts every pageview — which corrupts the
+   data rather than erroring, so nothing will tell you it happened. If one is present, verify
+   the `pk_` matches this workspace and move on; do not add another.
 3. **Insert the snippet** into the single site-wide layout — the one file every page renders
    through. Two parts, both required:
 
@@ -127,6 +132,13 @@ The step that justifies doing this in a terminal. Work in their actual codebase.
    strategy, not a raw tag; Nuxt wants `nuxt.config` `app.head.script`. Match the idiom of
    the framework and the surrounding code — a raw `<script>` in a React tree is a bug, not a
    style preference.
+
+   **The async tag is the easy half; the inline stub is where frameworks fight you.** It has
+   to execute during HTML parse, which is exactly what component-tree script handling defers.
+   In Next.js App Router that means `next/script` with `strategy="beforeInteractive"` (and
+   `dangerouslySetInnerHTML` for the stub body), not a `<script>` in the JSX. Get this wrong
+   and the tracker still *works* — it just mints the visitor cookie late, quietly losing the
+   bounced-visitor attribution the stub exists to protect. Nothing will flag it.
 5. **Commit on a branch and open a PR.** Never commit a tracker straight to their main branch.
    Say plainly that the tracker will not report until that PR is merged and deployed.
 6. **Verify with real data.** Once deployed, poll `view:web-traffic-live` until the first
