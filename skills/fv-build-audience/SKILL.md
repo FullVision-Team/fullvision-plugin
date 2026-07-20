@@ -63,7 +63,25 @@ Therefore:
 ### 4. Destination
 
 Google Customer Match / Meta Custom Audience / LinkedIn Matched Audience / Brevo. Pick based
-on floor clearance and consent state, and state which you picked and why.
+on floor clearance and consent state, and state which you picked and why. Per-platform floors,
+match rates and consent rules are in `shared/platforms/{google,meta,linkedin}.md`.
+
+## Retargeting is this skill with a different segment
+
+There is no separate retargeting skill, because retargeting is not a different job — it is
+this preflight with a behavioural segment instead of a revenue one (visited pricing and did
+not convert; started a checkout and abandoned; trialled and went quiet). The floor check and
+the consent gate are identical and they are the hard part.
+
+Two things change, and both make the gates *stricter*, never looser:
+
+- **Recency matters more than size.** A 30-day behavioural window converts; a 180-day one is
+  mostly noise wearing a segment's clothes.
+- **Consent is checked against the visitor, not the customer.** A person who browsed is not a
+  person who bought, and "they were on our site" has never been a lawful basis for uploading
+  them to an ad platform.
+
+Use `view:abandoned-checkouts` and `view:customer-journey` for the behavioural side.
 
 ## Activation — read-only in v1
 
