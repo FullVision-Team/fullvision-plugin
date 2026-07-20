@@ -52,7 +52,31 @@ loaded at once. Deferred loading fetches only the tools a skill actually names.
 | `fv-cut-wasted-spend` | weekly | Terms that spend money and produce zero payers → negative keywords |
 | `fv-find-leaky-pages` | weekly | Pages ranked by revenue lost, not bounce rate |
 | `fv-fix-page` | on demand | Applies the fix — GitHub PR or Webflow write |
-| `fv-build-audience` | on demand | Sized, floor-checked, consent-gated segments |
+| `fv-design-page-test` | on demand | Can this page power an A/B test? Usually no, with the numbers |
+| `fv-find-keyword-gaps` | monthly | Queries that impress but never pay, ranked by revenue |
+| `fv-fix-striking-distance` | monthly | Positions 5–20 where a snippet rewrite moves real money |
+| `fv-win-back-churned` | monthly | Lapsed customers worth recovering → a staged Brevo list |
+| `fv-build-audience` | on demand | Sized, floor-checked, consent-gated segments (incl. retargeting) |
+
+## Why there are no "specialist" agents
+
+A reasonable first instinct is to ship a Google Ads specialist, a Meta specialist, a LinkedIn
+specialist, an SEO specialist and a strategist. This plugin deliberately does not.
+
+A subagent buys you exactly two things: an isolated context window and a restricted tool set.
+It does not buy expertise — that comes from the instructions, which a skill delivers into the
+main conversation where the user actually is. Subagents start with no conversation history and
+cannot ask the user a question mid-run.
+
+Splitting by ad platform is worse than merely unnecessary. The question that matters is
+cross-platform — *which channel gets the next €10k?* — and answering it requires one context
+holding all three platforms on comparable attribution windows. That comparison is the entire
+reason FullVision exists. Three per-platform agents would each answer confidently from a third
+of the evidence.
+
+So: platform knowledge lives in `shared/platforms/*.md` and is read by whichever skill needs
+it. Jobs are skills. The only subagent is `fv-analyst`, and it earns its place on context
+isolation alone — deep multi-view digs whose raw rows nobody needs to see.
 
 ## How it behaves
 

@@ -1,6 +1,6 @@
 {
   "name": "fullvision",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Revenue-attributed marketing operations for Claude Code. Joins ad spend, web behaviour, SEO and Stripe revenue, then proposes and applies the changes.",
   "author": {
     "name": "FullVision",
