@@ -1,10 +1,10 @@
-import { loadSkills } from "./lib/skills";
+import { loadSkills, isAnalysisSkill } from "./lib/skills";
 
 const skills = loadSkills();
 const writeSkills = skills.filter((s) => s.frontmatter.writes.length > 0);
 
 describe("degradation contract", () => {
-  it("ships the eleven v0.2 skills", () => {
+  it("ships the twelve v0.2 skills", () => {
     expect(skills.map((s) => s.dir).sort()).toEqual([
       "fv-build-audience",
       "fv-cut-wasted-spend",
@@ -14,14 +14,17 @@ describe("degradation contract", () => {
       "fv-find-leaky-pages",
       "fv-fix-page",
       "fv-fix-striking-distance",
+      "fv-login",
       "fv-setup",
       "fv-verify-revenue-feedback-loop",
       "fv-win-back-churned",
     ]);
   });
 
-  it("every skill requires fullvision — it is the only non-optional server", () => {
-    for (const s of skills) expect(s.frontmatter.requires).toContain("fullvision");
+  it("every analysis skill requires fullvision — it is the only non-optional server", () => {
+    for (const s of skills.filter(isAnalysisSkill)) {
+      expect(s.frontmatter.requires).toContain("fullvision");
+    }
   });
 
   it.each(writeSkills.map((s) => [s.dir, s] as const))(

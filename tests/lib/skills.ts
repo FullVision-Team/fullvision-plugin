@@ -49,6 +49,17 @@ export function loadSkills(): Skill[] {
     });
 }
 
+// Skills that establish the FullVision connection rather than read through it.
+// The analysis contracts — requires: [fullvision], the fv-data-health
+// precondition, the shared reading protocol — all presuppose a working
+// connection, so they cannot apply to the skill whose job is to create one.
+// Kept as an explicit allowlist so adding a skill here is a deliberate act.
+const CONNECTION_SKILLS = new Set(["fv-login"]);
+
+export function isAnalysisSkill(skill: Skill): boolean {
+  return !CONNECTION_SKILLS.has(skill.dir);
+}
+
 export function mcpServerNames(): string[] {
   const cfg = JSON.parse(readFileSync(join(ROOT, ".mcp.json"), "utf8"));
   return Object.keys(cfg.mcpServers);
