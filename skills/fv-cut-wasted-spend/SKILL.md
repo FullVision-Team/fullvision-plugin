@@ -13,7 +13,10 @@ conversions. A term with 40 form fills and no Stripe charge is the most expensiv
 waste, and it is invisible to the ad platform's own reporting.
 
 Read `shared/reading-fullvision-data.md`, `shared/safety-rails.md` and
-`shared/sparse-data.md` before calling anything. All three are binding.
+`shared/sparse-data.md` before calling anything. All three are binding. For the platform whose
+spend you are judging, also read `shared/platforms/google.md`, `shared/platforms/meta.md` or
+`shared/platforms/linkedin.md` — the attribution windows are not comparable and the write
+capabilities differ.
 
 ## Steps
 

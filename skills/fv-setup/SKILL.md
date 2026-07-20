@@ -43,7 +43,7 @@ Follow `shared/report-format.md`, with the verdict replaced by the matrix:
 ```markdown
 # fv-setup — <workspace> — <date>
 
-**Usable today:** <n> of 7 skills (<m> read-only)
+**Usable today:** <n> of 11 skills (<m> read-only)
 **Data health:** <✅ | ⚠️ + what it biases>
 
 | Skill | Status | Blocked on |
