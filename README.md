@@ -15,18 +15,24 @@ windows. Every skill here exists to use that.
 /plugin install fullvision@fullvision-plugin
 ```
 
-Then, in a project directory:
+Then, in the repository that serves your website:
 
 ```
-/fullvision:fv-setup
+/fullvision:fv-onboard
 ```
 
-That is the only instruction. `fv-setup` tells you what works right now with what you have
-connected, and names the one thing worth connecting next.
+That is the only instruction, and it works from a standing start — no account, no API key,
+nothing connected. `fv-onboard` walks you through signup, installs the tracker **into your
+actual codebase** as a pull request, connects Stripe and your ad platforms, and does not
+call a step done until it can see the data arriving.
+
+Already set up? `/fullvision:fv-capabilities` tells you what works right now with what you
+have connected, and names the one thing worth connecting next.
 
 ## Setup
 
-Connect FullVision:
+Nothing to do up front — `fv-onboard` runs the login for you at the right moment. To connect
+a machine on its own (a second laptop, a re-login after 90 days, switching workspace):
 
 ```
 /fullvision:fv-login
@@ -51,7 +57,9 @@ loaded at once. Deferred loading fetches only the tools a skill actually names.
 
 | Skill | Cadence | Job |
 |---|---|---|
-| `fv-setup` | on install | What's usable right now, and what to connect next |
+| `fv-onboard` | on install | Zero to first attributed data — signup, tracker installed in your repo, Stripe, ads |
+| `fv-login` | on demand | Connect this machine — browser login, read-only key, no pasting |
+| `fv-capabilities` | on demand | What's usable right now, and what to connect next |
 | `fv-data-health` | precondition | Is the data trustworthy? Runs inside every other skill |
 | `fv-verify-revenue-feedback-loop` | weekly | Is closed revenue actually reaching Google/Meta/LinkedIn? |
 | `fv-cut-wasted-spend` | weekly | Terms that spend money and produce zero payers → negative keywords |

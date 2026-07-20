@@ -5,6 +5,21 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+### Added
+- `fv-onboard` — the install-time entry point, and the first skill that works from a standing
+  start: no account, no key, nothing connected. Walks signup → workspace → API key → tracker
+  → Stripe → server events → search/ads, verifying each step against live data rather than
+  asking "did that work?". Installs the tracker **into the user's repository** as a pull
+  request, which is the thing the web onboarding structurally cannot do.
+- `runs_unauthenticated` frontmatter flag. Exactly one skill may set it. Before this, the
+  degradation contract obliged every skill to refuse when `fullvision` was unreachable —
+  correct for analysis, but it left a new user with no reachable path to a key.
+
+### Changed
+- **Renamed `fv-setup` → `fv-capabilities`**, cadence `on-install` → `on-demand`. It answers
+  "what can I do today", which is a question you ask *after* setup. `fv-onboard` now owns the
+  install slot, and the tests assert only one skill claims it.
+
 ## [0.2.0] — 2026-07-20
 
 ### Added

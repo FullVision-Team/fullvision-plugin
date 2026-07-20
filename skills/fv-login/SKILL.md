@@ -1,7 +1,7 @@
 ---
 name: fv-login
 description: Connect this machine to FullVision in one click. Opens the browser, mints a read-only key on approval, and saves it locally. Run once after install, and again if calls start failing on auth.
-cadence: on-install
+cadence: on-demand
 requires: []
 writes: []
 ---
@@ -32,7 +32,8 @@ must run before `fullvision` is usable. It is the only skill that works from a c
    the MCP server was started before the key existed; tell the user to restart Claude Code.
    That is the one case a restart is needed.
 
-4. **Hand off to `fv-setup`** — suggest it, don't auto-run it. `fv-setup` is the skill that
+4. **Hand off** — suggest, do not auto-run. If they are mid-onboarding, `fv-onboard` resumes
+   at the tracker step. Otherwise `fv-capabilities` is the skill that
    maps what the user can actually do now.
 
 ## What the user is approving

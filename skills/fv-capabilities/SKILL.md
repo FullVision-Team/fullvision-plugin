@@ -1,23 +1,28 @@
 ---
-name: fv-setup
-description: Map which FullVision capabilities are usable right now given the connected MCP servers, and name the single next-best server to connect. Run once after install and whenever a connection changes.
-cadence: on-install
+name: fv-capabilities
+description: Map which FullVision capabilities are usable right now given the connected MCP servers, and name the single next-best server to connect. Run whenever a connection changes, or to see what the plugin can do today.
+cadence: on-demand
 requires: [fullvision]
 writes: []
 ---
 
-# fv-setup
+# fv-capabilities
 
-Onboarding. Answer one question: **what can this user actually do today, and what is the one
+Answer one question: **what can this user actually do today, and what is the one
 thing they should connect next?**
+
+This assumes FullVision is already connected. Getting there is someone else's job: `fv-login`
+connects this machine, and `fv-onboard` covers the whole path from no account to first data.
 
 Read `shared/reading-fullvision-data.md` before calling anything.
 
 ## Steps
 
-1. **Probe FullVision.** Call `fullvision:list_views`. If it fails on auth, stop and point the
-   user at `/fullvision:fv-login` — one click in the browser. Nothing else in the plugin works
-   without this; it is the only non-optional server.
+1. **Probe FullVision.** Call `fullvision:list_views`. If it fails on auth, stop and route
+   them by what they are missing: an existing user who just needs this machine connected wants
+   `/fullvision:fv-login` — one click in the browser; someone with no account, tracker or
+   revenue data yet wants `/fullvision:fv-onboard`, which covers the whole path. Either way,
+   do not ask them to go find a key.
 2. **Probe each other server** by making its cheapest read call. Record connected / not
    connected / errored. Do not treat "not connected" as a failure; most users start with one.
 3. **Run the data-health precondition** — call `fullvision:query_view` on
@@ -41,9 +46,9 @@ Read `shared/reading-fullvision-data.md` before calling anything.
 Follow `shared/report-format.md`, with the verdict replaced by the matrix:
 
 ```markdown
-# fv-setup — <workspace> — <date>
+# fv-capabilities — <workspace> — <date>
 
-**Usable today:** <n> of 11 skills (<m> read-only)
+**Usable today:** <n> of 10 analysis skills (<m> read-only)
 **Data health:** <✅ | ⚠️ + what it biases>
 
 | Skill | Status | Blocked on |
