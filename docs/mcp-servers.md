@@ -7,9 +7,7 @@ servers hold credentials that can spend customer money.
 | Server | Provider | Trust | Pin | Reviewed |
 |---|---|---|---|---|
 | `fullvision` | FullVision | first-party | n/a (hosted) | — |
-| `meta-ads` | Meta | official hosted | n/a (hosted) | — |
 | `google-ads` | Google (`googleads/google-ads-mcp`) | official, self-hosted | `f48a6b85e1f43ebd44a72531c9611e2b7265ca28` | 2026-07-20 |
-| `linkedin-ads` | community (`danielpopamd/linkedin-ads-mcp`, 25★) | **community** | `05a27618628408af263ac56a1ca62a8aef404718` | 2026-07-20 |
 | `webflow` | Webflow | official hosted | n/a (hosted) | — |
 | `brevo` | Brevo | first-party | n/a (hosted) | — |
 
@@ -17,10 +15,8 @@ servers hold credentials that can spend customer money.
 
 | Server | Read | Write | Customer auth burden |
 |---|---|---|---|
-| fullvision | 22 tools over 73 views | custom views, funnels | 1-click browser login (`/fullvision:fv-login`) |
-| meta-ads | ✅ | ✅ 29 tools | 1-click OAuth |
+| fullvision | 44 tools over 73 views | custom views, funnels + Google/Meta/LinkedIn campaign mutate (pause/enable + budget, propose→apply, undoable) | 1-click browser login (`/fullvision:fv-login`) |
 | google-ads | ✅ GAQL only | ❌ **read-only by design** | developer token (days) + Python toolchain |
-| linkedin-ads | ✅ | ✅ | own dev app + LinkedIn app review (weeks) |
 | webflow | ✅ | ✅ CMS / pages | 1-click OAuth |
 | brevo | ✅ | ✅ lists / segments / campaigns | API key |
 
