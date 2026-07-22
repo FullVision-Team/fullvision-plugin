@@ -45,11 +45,11 @@ time in FullVision → Settings → API keys.
 Prefer to manage the key yourself? Export `FULLVISION_API_KEY=sk_…` instead — it takes
 precedence over the saved credential.
 
-Optional, per server you want to use: `GOOGLE_ADS_DEVELOPER_TOKEN`, `LINKEDIN_ACCESS_TOKEN`,
-`BREVO_API_KEY`. Meta and Webflow authenticate in the browser on first use. You do not need
-all of them — every skill degrades gracefully.
+Optional, per server you want to use: `GOOGLE_ADS_DEVELOPER_TOKEN`, `BREVO_API_KEY`. Webflow
+authenticates in the browser on first use. You do not need all of them — every skill degrades
+gracefully.
 
-**Recommended:** enable deferred tool loading (`ENABLE_TOOL_SEARCH`). This plugin bundles six
+**Recommended:** enable deferred tool loading (`ENABLE_TOOL_SEARCH`). This plugin bundles four
 MCP servers, and tool-selection accuracy degrades measurably when a lot of tool schema is
 loaded at once. Deferred loading fetches only the tools a skill actually names.
 
