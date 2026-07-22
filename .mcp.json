@@ -5,10 +5,6 @@
       "command": "node",
       "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/fv-mcp.mjs"]
     },
-    "meta-ads": {
-      "type": "http",
-      "url": "https://mcp.facebook.com/ads"
-    },
     "google-ads": {
       "type": "stdio",
       "command": "pipx",
@@ -20,17 +16,6 @@
       ],
       "env": {
         "GOOGLE_ADS_DEVELOPER_TOKEN": "${GOOGLE_ADS_DEVELOPER_TOKEN}"
-      }
-    },
-    "linkedin-ads": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "-y",
-        "github:danielpopamd/linkedin-ads-mcp#05a27618628408af263ac56a1ca62a8aef404718"
-      ],
-      "env": {
-        "LINKEDIN_ACCESS_TOKEN": "${LINKEDIN_ACCESS_TOKEN}"
       }
     },
     "webflow": {
