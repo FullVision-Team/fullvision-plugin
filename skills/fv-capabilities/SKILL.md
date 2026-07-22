@@ -31,9 +31,10 @@ Read `shared/reading-fullvision-data.md` before calling anything.
 4. **Build the capability matrix** below from the skill catalog, marking each skill
    available / read-only / unavailable per the degradation rule.
 5. **Name exactly one next step.** Not a list. Rank by revenue unlocked per hour of setup
-   effort, using the auth-burden column in `docs/mcp-servers.md`: Meta and Webflow are 1-click
-   OAuth; Brevo is an API key; Google Ads needs a developer token (days); LinkedIn needs a dev
-   app plus app review (weeks). Do not recommend LinkedIn to someone who has connected nothing.
+   effort, using the auth-burden column in `docs/mcp-servers.md`: Webflow is 1-click OAuth;
+   Brevo is an API key; Google Ads needs a developer token (days). Meta and LinkedIn ad
+   management is first-party — it rides the FullVision app connection the customer likely
+   already completed for spend sync, not a separate server, so there is nothing extra to connect.
 
 ## Degradation rule
 
@@ -55,6 +56,8 @@ Follow `shared/report-format.md`, with the verdict replaced by the matrix:
 |---|---|---|
 | fv-data-health | ✅ available | — |
 | fv-cut-wasted-spend | ⚠️ read-only | google-ads is read-only by design |
+| Meta Ads | ✅ manage | pause/enable + ad-set budget via `fullvision:meta_propose_campaign_status` (undoable, proposed→apply) |
+| LinkedIn Ads | ✅ manage | pause/enable + campaign-group budget via `fullvision:linkedin_propose_campaign_group_budget` (undoable) |
 | … | | |
 
 ## Connect next: <server>
@@ -69,7 +72,11 @@ Follow `shared/report-format.md`, with the verdict replaced by the matrix:
 - **`fv-build-audience` is read-only in v1** — audience activation is not on the FullVision
   MCP surface yet. It sizes, floor-checks and consent-gates the segment, then hands off to the
   FullVision app.
-- **Six MCP servers is a lot of tool schema.** Recommend enabling deferred tool loading
+- **Meta and LinkedIn ad management is first-party and undoable.** Pause/enable and budget
+  changes go through `fullvision:meta_propose_*` / `fullvision:linkedin_propose_*` — reads live
+  state, stores an undo, applied only by proposal id after an explicit yes. No vendor write
+  server, no separate token. Out of v1: bidding, targeting, creative, create/delete.
+- **Four MCP servers is a lot of tool schema.** Recommend enabling deferred tool loading
   (`ENABLE_TOOL_SEARCH`) — tool-selection accuracy degrades measurably under heavy MCP load.
 
 ## Refuse when

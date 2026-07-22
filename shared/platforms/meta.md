@@ -25,14 +25,35 @@ the entire batch**, taking good events with it. Charges past the wall are ledger
 
 A sustained non-zero `expired` count is a broken loop, not noise. Treat it as an incident.
 
-## Write capability
+## Write capability — first-party, via FullVision
 
-The official hosted Meta MCP server has **29 write tools** and authenticates with 1-click
-OAuth. Together with Webflow it is the lowest-friction connection available — recommend it
-first to someone who has connected nothing.
+Meta campaign changes go through FullVision's own MCP surface, not a Meta server. The OAuth
+grant FullVision already holds (`ads_management`, Advanced Access) is read **and** write — the
+same connection the customer completed in the FullVision app for spend sync.
 
-Write capability plus a low auth barrier is exactly the combination that makes
-`shared/safety-rails.md` load-bearing here. Propose → confirm → apply, always two turns.
+Two reversible operations, each a `meta_propose_*` tool that reads live state and stores an undo
+before a human sees it:
+
+| Tool | Does |
+|---|---|
+| `fullvision:meta_propose_campaign_status` | pause / enable a campaign (cascades to child ad sets) |
+| `fullvision:meta_propose_adset_budget` | change an ad set's daily budget |
+
+Then `fullvision:meta_apply_proposal` (takes a proposal id, never a payload),
+`fullvision:meta_revert_mutation`, `fullvision:meta_revert_run` and
+`fullvision:meta_list_pending_proposals`.
+
+**Out of scope for v1, and a skill must refuse them outright:** bidding, targeting, creative, and
+creating or deleting campaigns/ad sets/ads.
+
+**Ad-set budgets under a Campaign Budget Optimization (CBO) campaign are refused at propose** —
+the budget lives on the campaign, not the ad set. This is not a failure; it is the honest answer.
+
+**Pausing a campaign cascades to its child ad sets.** The undo re-enables the campaign; it does
+not reconstruct which child ad sets were independently paused beforehand.
+
+Do not suggest installing a community write server. A server with a token that can spend the
+customer's money has not been reviewed.
 
 ## Match quality
 

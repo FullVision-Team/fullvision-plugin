@@ -23,6 +23,31 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 - `fv-onboard` no longer teaches key handling at all. Its auth phase is "run `fv-login`", and
   a test asserts the old `export FULLVISION_API_KEY` path cannot come back.
 
+## [0.4.0] — 2026-07-22
+
+### Added
+- **First-party Meta + LinkedIn Ads write surface.** `fullvision:meta_propose_campaign_status`,
+  `meta_propose_adset_budget`, `linkedin_propose_campaign_status`,
+  `linkedin_propose_campaign_group_budget`, each platform's `apply_proposal`,
+  `revert_mutation`, `revert_run` and `list_pending_proposals`. Every change reads live state,
+  stores a computed undo, is applied only by id (never a model-supplied payload), and is refused
+  on live-state drift. Caps + a 24h cooldown are enforced in full_db, not in markdown.
+
+### Removed
+- **The `meta-ads` (hosted) and `linkedin-ads` (community) MCP servers.** Reads already go
+  through `fullvision:query_view`; writes now go through FullVision's own surface. This drops the
+  community LinkedIn server and its `LINKEDIN_ACCESS_TOKEN`. Ad-platform servers: three → one
+  (`google-ads` remains until its own cutover lands).
+
+### Changed
+- `shared/platforms/meta.md` + `linkedin.md` documented these as write-via-vendor-server. They
+  are now first-party. `fv-capabilities` reports Meta/LinkedIn management as an available,
+  undoable capability.
+
+### Out of scope, deliberately
+- Bidding, targeting, creative; create/delete of campaigns/ad sets/groups/ads — irreversible or
+  learning-resetting, out of v1 on all platforms.
+
 ## [0.2.0] — 2026-07-20
 
 ### Added
