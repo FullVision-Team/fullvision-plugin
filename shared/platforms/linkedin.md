@@ -14,18 +14,35 @@ cycle is close to meaningless. Judge LinkedIn over **at least 180 days**, and sa
 Never rank LinkedIn against Meta on the same table without stating this. Meta's number is a
 7-day prediction; LinkedIn's is a year of collected cash. They are different quantities.
 
-## Auth burden — the highest in the bundle
+## Auth burden — none beyond the FullVision app
 
-Requires the customer's own LinkedIn developer app **plus LinkedIn app review**, which takes
-**weeks**. Never recommend LinkedIn as a first connection. In practice it is the last server a
-workspace connects, and often not at all.
+No separate LinkedIn developer app, no app review, no standalone access token. Both spend sync
+and campaign writes ride the single `rw_ads` OAuth grant the customer completes in the FullVision
+app — the same MDP-approved connection, read and write. The old community server's own-dev-app
+plus weeks-of-app-review burden is gone with it.
 
-## Supply-chain note
+## Write capability — first-party, via FullVision
 
-The LinkedIn server is the only **community** server in the bundle
-(`danielpopamd/linkedin-ads-mcp`, 25★), pinned to a reviewed 40-char SHA. It holds a token
-that can spend money. Bumping that pin is a security review, not a chore — read the diff, not
-the changelog. See `docs/mcp-servers.md`.
+LinkedIn campaign changes go through FullVision's own MCP surface, not a community server (the
+old one is now removed). The OAuth grant FullVision already holds (`rw_ads`, MDP-approved) is
+read **and** write.
+
+| Tool | Does |
+|---|---|
+| `fullvision:linkedin_propose_campaign_status` | pause / enable a campaign |
+| `fullvision:linkedin_propose_campaign_group_budget` | change a **campaign group's** daily budget |
+
+Then `fullvision:linkedin_apply_proposal`, `fullvision:linkedin_revert_mutation`,
+`fullvision:linkedin_revert_run` and `fullvision:linkedin_list_pending_proposals`.
+
+**Budget is set at the campaign _group_ level, never the campaign** — LinkedIn deprecated
+campaign-level budgets in 2020. A budget change naming a campaign is refused with that message.
+
+**Out of scope for v1:** bidding, targeting, creative, create/delete. Same caps as every platform:
+max 5 status changes / 3 budget changes per run, ±20% per budget change, 15% of trailing-30d
+account spend, one run per account per 24h, 60-minute proposal TTL.
+
+Do not suggest installing a community write server.
 
 ## Cost profile
 
