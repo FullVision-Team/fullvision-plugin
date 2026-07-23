@@ -27,8 +27,9 @@ Read `shared/reading-fullvision-data.md`, `shared/safety-rails.md` and
    contraction are different populations with different win-back odds, and a failed payment is
    not a decision to leave. Treat delinquent churn as a **billing** problem and route it out of
    this campaign — mailing "we miss you" to someone whose card expired is insulting.
-3. **Pull the population.** `fullvision:query_view` on `view:revenue-retention` and
-   `view:retention-cohorts` for shape, `view:subscriptions` for per-customer churn events, and
+3. **Pull the population.** Revenue views are hidden from the MCP surface, so churn shape and
+   per-customer churn events come from `fullvision:run_sql_query` (the `churn` guidance from
+   step 2 names the tables and the churn-classification rules). Use `fullvision:query_view` on
    `view:customer-ltv` for what each was worth. Aggregate in SQL.
 4. **Segment by why they left and what they were worth**, not by recency alone:
 
