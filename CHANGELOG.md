@@ -6,6 +6,18 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 ## [Unreleased]
 
 ### Added
+- **Google Ads ad-surface writes** (gateway tools shipped from `full_distrib`, not this repo):
+  `fullvision:google_propose_sitelinks`, `fullvision:google_propose_callouts` and
+  `fullvision:google_propose_structured_snippets` — **declarative replace** of the asset set at
+  one level (`account` or `campaign` + `campaign_id`): the call states the desired FULL set,
+  the gateway swaps the links in one atomic mutate, revert restores the prior set. Caps 10/10/5;
+  snippet headers from Google's fixed list. `fullvision:google_propose_ad_text` gains display
+  paths (`path1`/`path2` ≤15) and slot pinning (`{ text, pin }`, `HEADLINE_1..3` /
+  `DESCRIPTION_1..2`). `shared/platforms/google.md` gains an "Ad-surface assets" section
+  (asset model, read-before-replace discipline, one-pending-per-target rule);
+  `google-ads-review` step 7 stages the asset tools when the landing-page set changed.
+  **Requires the full_db + full_distrib deploys landing first — the contract test stays red
+  until the gateway exposes the three tools.**
 - **Google Ads conversion-goal management** (three gateway tools shipped from `full_distrib`, not
   this repo): `fullvision:google_propose_conversion_goal_settings` (account-level
   CustomerConversionGoal biddable defaults, per category×origin, ≤5, update-only),
