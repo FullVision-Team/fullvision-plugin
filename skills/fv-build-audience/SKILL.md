@@ -81,7 +81,9 @@ Two things change, and both make the gates *stricter*, never looser:
   person who bought, and "they were on our site" has never been a lawful basis for uploading
   them to an ad platform.
 
-Use `view:abandoned-checkouts` and `view:customer-journey` for the behavioural side.
+Use `view:customer-journey` for the behavioural side; for abandoned-checkout segments use
+`fullvision:run_sql_query` with the `revenue` guidance (the abandoned-checkouts view is hidden
+from the MCP surface).
 
 ## Activation — read-only in v1
 

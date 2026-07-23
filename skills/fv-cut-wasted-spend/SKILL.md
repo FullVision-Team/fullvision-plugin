@@ -2,8 +2,8 @@
 name: fv-cut-wasted-spend
 description: Find search terms and placements that spend real money and produce zero paying customers, then propose negative keywords. Judges on Stripe revenue, not form fills.
 cadence: weekly
-requires: [fullvision, google-ads]
-writes: [google-ads]
+requires: [fullvision]
+writes: [fullvision]
 ---
 
 # fv-cut-wasted-spend
@@ -33,9 +33,11 @@ capabilities differ.
    volume. Require a second signal per candidate: no assisted conversions in any attribution
    model (`view:ltv-by-campaign`), or engaged-session rate far below the account baseline
    (`view:ad-landing-pages`). Drop candidates that fail corroboration into "Not proposed".
-6. **Emit the change-list, then STOP.** Do not write in this turn. Ever. Two turns, always
-   (`shared/safety-rails.md` §1).
-7. **On confirmation:** write the change log entry first, then add the negative keywords.
+6. **Propose the negatives, then STOP.** Stage them with
+   `fullvision:google_propose_negative_keywords` (or, in read-only mode, emit the change-list).
+   Do not apply in this turn. Ever. Two turns, always (`shared/safety-rails.md` §1).
+7. **On confirmation:** apply the staged proposal by id through the `apply_proposal` human gate;
+   the gateway records the change and stores an undo (`revert_mutation` reverses it).
 
 ## Thresholds — fixed, never runtime-adjusted
 
@@ -52,13 +54,18 @@ capabilities differ.
 - Max **15%** of trailing-30d spend affected.
 - Never propose a campaign pause here. That is `fv-kill-losing-campaigns` (v2).
 
-## Write path — Google Ads is read-only
+## Write path — first-party, via the FullVision gateway
 
-The official Google Ads MCP server exposes GAQL reads only. **Every run of this skill is
-read-only mode** per `shared/safety-rails.md` §9: emit the change-list as an artifact with
-copy-pasteable negative keyword lists grouped by ad group, plus the exact Ads UI path to apply
-them. Report this as the normal outcome. Do not present it as a failure, and do not suggest
-installing an unvetted community write server.
+Negative keywords are proposed with `fullvision:google_propose_negative_keywords` and applied
+only through the `apply_proposal` human gate — it reads live account state, stages a computed
+undo, and mutates only by proposal id after an explicit yes (`revert_mutation` reverses it).
+Reads stay on FullVision views. Never apply in the turn you analyse (`shared/safety-rails.md` §1).
+
+**Read-only degradation.** If the workspace's Google Ads connection is spend-sync only (no
+mutate scope), the propose tools are unavailable and the skill runs in read-only mode per
+`shared/safety-rails.md` §9: emit the change-list as an artifact with copy-pasteable negative
+keyword lists grouped by ad group, plus the exact Ads UI path to apply them. Report this as a
+normal outcome, not a failure.
 
 ## Output
 

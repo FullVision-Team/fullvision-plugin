@@ -11,20 +11,20 @@ platforms and the one whose numbers are directly comparable to Stripe.
 
 Judge Google on a trailing 90-day window. A shorter window systematically understates it.
 
-## Write capability — none
+## Read + write capability — first-party, via the FullVision gateway
 
-The official `googleads/google-ads-mcp` server exposes **GAQL reads only**. There is no
-supported write path in this plugin. Every Google change ships as a reviewed change-list the
-user applies in the Ads UI (`shared/safety-rails.md` §9). This is permanent for v1.
+Reads go through `fullvision:google_ads_search` — a GAQL passthrough capped at LIMIT 1000 by
+default (10000 max) and tenancy-scoped to the workspace's connected accounts — plus
+`fullvision:google_list_ad_accounts`. Writes go through `fullvision:google_propose_*` (campaign
+budget/status, ad text, negative keywords, tracking params) and `fullvision:google_check_ad_status`,
+applied only through the `apply_proposal` human gate and reversible with `revert_mutation`. No
+vendor server, no developer token, no Python toolchain.
 
-Do not suggest installing a community write server to work around it. A server with an OAuth
-token that can restructure campaigns is a server that can spend the customer's money, and it
-has not been reviewed.
+## Connection
 
-## Auth burden
-
-Developer token approval takes **days** and requires a Google Ads manager account, plus a
-working Python toolchain for `pipx`. Never recommend Google as someone's first connection.
+Google Ads connects through the FullVision app OAuth at
+https://app.fullvision.io/setup/data-sync/google-ads — the same connection that syncs spend.
+Nothing to install and no developer token to request.
 
 ## Querying discipline
 
