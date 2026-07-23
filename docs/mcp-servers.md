@@ -7,7 +7,6 @@ servers hold credentials that can spend customer money.
 | Server | Provider | Trust | Pin | Reviewed |
 |---|---|---|---|---|
 | `fullvision` | FullVision | first-party | n/a (hosted) | — |
-| `google-ads` | Google (`googleads/google-ads-mcp`) | official, self-hosted | `f48a6b85e1f43ebd44a72531c9611e2b7265ca28` | 2026-07-20 |
 | `webflow` | Webflow | official hosted | n/a (hosted) | — |
 | `brevo` | Brevo | first-party | n/a (hosted) | — |
 
@@ -15,8 +14,7 @@ servers hold credentials that can spend customer money.
 
 | Server | Read | Write | Customer auth burden |
 |---|---|---|---|
-| fullvision | 44 tools over 73 views | custom views, funnels + Google/Meta/LinkedIn campaign mutate (pause/enable + budget, propose→apply, undoable) | 1-click browser login (`/fullvision:fv-login`) |
-| google-ads | ✅ GAQL only | ❌ **read-only by design** | developer token (days) + Python toolchain |
+| fullvision | 44 tools over 73 views + Google Ads GAQL passthrough | custom views, funnels + Google/Meta/LinkedIn campaign mutate (pause/enable + budget, propose→apply, undoable) | 1-click browser login (`/fullvision:fv-login`) |
 | webflow | ✅ | ✅ CMS / pages | 1-click OAuth |
 | brevo | ✅ | ✅ lists / segments / campaigns | API key |
 

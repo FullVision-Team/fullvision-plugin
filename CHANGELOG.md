@@ -11,6 +11,19 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   → Stripe → server events → search/ads, verifying each step against live data rather than
   asking "did that work?". Installs the tracker **into the user's repository** as a pull
   request, which is the thing the web onboarding structurally cannot do.
+- **First-party Google Ads read surface.** `fullvision:google_ads_search` — a GAQL passthrough
+  capped at LIMIT 1000 by default (10000 max), tenancy-scoped to the workspace's connected
+  accounts — and `fullvision:google_list_ad_accounts`. The write tools
+  (`google_propose_campaign_budget/status/ad_text/negative_keywords/tracking_params`,
+  `google_check_ad_status`) already shipped, so Google Ads is now first-party read+write, gated
+  by `apply_proposal` + `revert_mutation`.
+
+### Removed
+- **The bundled `google-ads` MCP server** (self-hosted `googleads/google-ads-mcp`) — the last
+  vendor ad server in the plugin. Reads now go through `fullvision:google_ads_search`; the
+  pipx/Python toolchain, gcloud ADC and `GOOGLE_ADS_DEVELOPER_TOKEN` are gone. Ad-platform
+  vendor servers: one → zero. **This requires the gateway deploy landing first (full_db +
+  full_distrib PRs) — do not release until those are live.**
 
 ### Changed
 - **Renamed `fv-setup` → `fv-capabilities`**, cadence `on-install` → `on-demand`. It answers
@@ -22,6 +35,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   exactly as before — cadence is metadata, not dispatch.
 - `fv-onboard` no longer teaches key handling at all. Its auth phase is "run `fv-login`", and
   a test asserts the old `export FULLVISION_API_KEY` path cannot come back.
+- `shared/platforms/google.md` documented Google as read-only-via-vendor-server. It is now
+  first-party read+write via the FullVision gateway, connected through the app OAuth at
+  `https://app.fullvision.io/setup/data-sync/google-ads`. `fv-cut-wasted-spend` proposes
+  negatives via `fullvision:google_propose_negative_keywords`, applied through the
+  `apply_proposal` gate. `fv-capabilities` reports Google Ads management as available and undoable.
 
 ## [0.4.0] — 2026-07-22
 
