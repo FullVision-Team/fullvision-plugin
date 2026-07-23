@@ -1,12 +1,12 @@
 ---
-name: fv-verify-revenue-feedback-loop
+name: verify-revenue-feedback-loop
 description: Verify that closed Stripe revenue is actually reaching Google, Meta and LinkedIn as conversion signal — upload failures, expired events, pLTV sanity — and recommend a mid-funnel goal when deal volume is too low for payment-only optimisation.
 cadence: weekly
 requires: [fullvision]
 writes: []
 ---
 
-# fv-verify-revenue-feedback-loop
+# verify-revenue-feedback-loop
 
 This is the moat skill. Ad platforms optimise toward whatever signal they receive. If real
 revenue is not reaching them, every other recommendation in this plugin is being undone by
@@ -18,7 +18,7 @@ those files say how.
 
 ## Steps
 
-1. **Precondition:** run `fv-data-health`. On 🚩, abort — upload figures are unreadable when
+1. **Precondition:** run `data-health`. On 🚩, abort — upload figures are unreadable when
    identity coverage is broken.
 2. **Per platform, is signal flowing?** `fullvision:run_sql_query` against the conversion
    upload ledgers, aggregated in SQL (`$USER_ID` required in every WHERE). Get, per platform,
@@ -57,6 +57,6 @@ settings.
 
 ## Refuse when
 
-- `fv-data-health` returns 🚩.
+- `data-health` returns 🚩.
 - Fewer than 30 days of upload ledger history exist — the loop has not run long enough to
   judge.

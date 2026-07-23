@@ -42,7 +42,7 @@ Nothing to install and no developer token to request.
 
 FullVision exports payment conversions with a flat pLTV value. Google's smart bidding
 optimises toward whatever it receives, so a broken export silently undoes every
-recommendation. `fv-verify-revenue-feedback-loop` checks this.
+recommendation. `verify-revenue-feedback-loop` checks this.
 
 Below roughly **20–30 closed deals/month** Google's bidding cannot learn from payment events
 alone — recommend a mid-funnel goal with an assigned proxy value instead.
@@ -52,4 +52,4 @@ alone — recommend a mid-funnel goal with an assigned proxy value instead.
 Floor is **100 matched** members (lowered from 1,000 in 2026). At the structural B2B match
 rate of ~20%, that needs a raw list of ~500. Consent requires `ad_user_data` and
 `ad_personalization` both GRANTED per EEA user, with no B2B or work-email carve-out. See
-`fv-build-audience`.
+`build-audience`.

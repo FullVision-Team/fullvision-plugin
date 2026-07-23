@@ -1,18 +1,18 @@
 ---
-name: fv-capabilities
+name: capabilities
 description: Map which FullVision capabilities are usable right now given the connected MCP servers, and name the single next-best server to connect. Run whenever a connection changes, or to see what the plugin can do today.
 cadence: on-demand
 requires: [fullvision]
 writes: []
 ---
 
-# fv-capabilities
+# capabilities
 
 Answer one question: **what can this user actually do today, and what is the one
 thing they should connect next?**
 
-This assumes FullVision is already connected. Getting there is someone else's job: `fv-login`
-connects this machine, and `fv-onboard` covers the whole path from no account to first data.
+This assumes FullVision is already connected. Getting there is someone else's job: `login`
+connects this machine, and `onboard` covers the whole path from no account to first data.
 
 Read `shared/reading-fullvision-data.md` before calling anything.
 
@@ -20,14 +20,14 @@ Read `shared/reading-fullvision-data.md` before calling anything.
 
 1. **Probe FullVision.** Call `fullvision:list_views`. If it fails on auth, stop and route
    them by what they are missing: an existing user who just needs this machine connected wants
-   `/fullvision:fv-login` — one click in the browser; someone with no account, tracker or
-   revenue data yet wants `/fullvision:fv-onboard`, which covers the whole path. Either way,
+   `/fullvision:login` — one click in the browser; someone with no account, tracker or
+   revenue data yet wants `/fullvision:onboard`, which covers the whole path. Either way,
    do not ask them to go find a key.
 2. **Probe each other server** by making its cheapest read call. Record connected / not
    connected / errored. Do not treat "not connected" as a failure; most users start with one.
 3. **Run the data-health precondition** — call `fullvision:query_view` on
    `view:health-identity-recon`, `view:health-checkout-coverage`, `view:health-event-coverage`.
-   Summarise in one line each. Full detail is `fv-data-health`'s job.
+   Summarise in one line each. Full detail is `data-health`'s job.
 4. **Build the capability matrix** below from the skill catalog, marking each skill
    available / read-only / unavailable per the degradation rule.
 5. **Name exactly one next step.** Not a list. Rank by revenue unlocked per hour of setup
@@ -47,15 +47,15 @@ Read `shared/reading-fullvision-data.md` before calling anything.
 Follow `shared/report-format.md`, with the verdict replaced by the matrix:
 
 ```markdown
-# fv-capabilities — <workspace> — <date>
+# capabilities — <workspace> — <date>
 
 **Usable today:** <n> of 10 analysis skills (<m> read-only)
 **Data health:** <✅ | ⚠️ + what it biases>
 
 | Skill | Status | Blocked on |
 |---|---|---|
-| fv-data-health | ✅ available | — |
-| fv-cut-wasted-spend | ✅ available | negatives proposed via `fullvision:google_propose_negative_keywords` (undoable, proposed→apply) |
+| data-health | ✅ available | — |
+| cut-wasted-spend | ✅ available | negatives proposed via `fullvision:google_propose_negative_keywords` (undoable, proposed→apply) |
 | Google Ads | ✅ manage | GAQL reads via `fullvision:google_ads_search`; pause/enable + budget via `fullvision:google_propose_*` (undoable, proposed→apply) |
 | Meta Ads | ⏸ reads only | write tools are hidden from the MCP surface for now (Google-only mutate); reads via `fullvision:query_view` ads views |
 | LinkedIn Ads | ⏸ reads only | write tools are hidden from the MCP surface for now (Google-only mutate); reads via `fullvision:query_view` ads views |
@@ -67,7 +67,7 @@ Follow `shared/report-format.md`, with the verdict replaced by the matrix:
 
 ## Things to state plainly, every run
 
-- **`fv-build-audience` is read-only in v1** — audience activation is not on the FullVision
+- **`build-audience` is read-only in v1** — audience activation is not on the FullVision
   MCP surface yet. It sizes, floor-checks and consent-gates the segment, then hands off to the
   FullVision app.
 - **Google Ads management is first-party and undoable.** Reads go through

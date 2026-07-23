@@ -1,12 +1,12 @@
 ---
-name: fv-onboard
+name: onboard
 description: Take a new user from no FullVision account to first attributed revenue data — signup, workspace, login, tracker installed in their actual codebase, Stripe, and search/ads connections. The install-time entry point.
 cadence: on-install
 requires: [fullvision]
 writes: []
 ---
 
-# fv-onboard
+# onboard
 
 Get this user from nothing to a working, attributed dataset. Nothing else in the plugin
 functions until this is done.
@@ -15,7 +15,7 @@ functions until this is done.
 `fullvision` connection as fatal. Here it is the starting condition — the user does not have
 a key yet, and that is the state you are fixing.
 
-**Authentication is `fv-login`'s job, not yours.** It owns the browser flow, the key, and the
+**Authentication is `login`'s job, not yours.** It owns the browser flow, the key, and the
 credential file. Never teach a second way to authenticate — no copying secret keys out of
 Settings, no shell-profile edits. If you find yourself explaining `sk_` handling, you have
 gone wrong.
@@ -68,15 +68,15 @@ Say this before they leave for the browser, not after they come back confused.
 
 ### Phase 2 — Connect this machine
 
-Run the `fv-login` skill. That is the whole phase — it opens the browser, the user picks a
+Run the `login` skill. That is the whole phase — it opens the browser, the user picks a
 workspace and clicks Authorize, and a read-only key lands in `~/.fullvision/credentials.json`.
 
 Do not build a parallel path. Never send them to the API-keys page for a secret key, never
 offer to write one into their shell profile, and never accept a key pasted into the chat.
-`fv-login` exists so none of that has to happen.
+`login` exists so none of that has to happen.
 
 Say what they are approving before the browser opens — read-only, scoped to the one workspace
-they pick, 90 days, revocable in Settings. `fv-login` states this too; saying it first is what
+they pick, 90 days, revocable in Settings. `login` states this too; saying it first is what
 makes the browser prompt unsurprising rather than alarming.
 
 If several workspaces are offered, make sure they pick the one this repository serves. Linking
@@ -103,7 +103,7 @@ The step that justifies doing this in a terminal. Work in their actual codebase.
    https://app.fullvision.io/setup/data-sync/web-tracker, alongside the current inline stub.
 
    `pk_` is the only FullVision key that belongs in client-side HTML. It is not the key
-   `fv-login` stored, and the two are not interchangeable in either direction.
+   `login` stored, and the two are not interchangeable in either direction.
 2. **Detect the framework, and check it is not already installed.** Look for `next.config.*`,
    `nuxt.config.*`, `svelte.config.*`, `astro.config.*`, `app/layout.tsx`, `index.html`, a
    Webflow/WordPress export, or a plain static site. Name what you found before editing.
@@ -198,8 +198,8 @@ connection, and asking for one costs trust.
 
 ### Phase 8 — Hand off
 
-Run `fv-data-health` and report the three coverage numbers, so the user starts with a calibrated
-sense of what their data can support. Then hand off to `fv-capabilities` for what to do next.
+Run `data-health` and report the three coverage numbers, so the user starts with a calibrated
+sense of what their data can support. Then hand off to `capabilities` for what to do next.
 
 Say clearly what is still missing and what it would unlock. A user who stopped after the
 tracker should know their ROAS numbers are traffic-only until Stripe is connected.

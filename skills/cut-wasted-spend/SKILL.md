@@ -1,12 +1,12 @@
 ---
-name: fv-cut-wasted-spend
+name: cut-wasted-spend
 description: Find search terms and placements that spend real money and produce zero paying customers, then propose negative keywords. Judges on Stripe revenue, not form fills.
 cadence: weekly
 requires: [fullvision]
 writes: [fullvision]
 ---
 
-# fv-cut-wasted-spend
+# cut-wasted-spend
 
 The job a marketer already runs every Monday. The difference here: **zero payers**, not zero
 conversions. A term with 40 form fills and no Stripe charge is the most expensive kind of
@@ -20,7 +20,7 @@ capabilities differ.
 
 ## Steps
 
-1. **Precondition:** run `fv-data-health`. On 🚩, abort. On ⚠️, raise every minimum-n
+1. **Precondition:** run `data-health`. On 🚩, abort. On ⚠️, raise every minimum-n
    threshold below by 50% and say so in the report.
 2. **Establish the measurable window.** `fullvision:query_view` on
    `view:ads-measurement-start`. Everything before that date is unmeasurable, not wasteful.
@@ -52,7 +52,7 @@ capabilities differ.
 - Max **25 negative keywords** per run (overrides the default 10-entity cap — a negative
   keyword is the most reversible action available).
 - Max **15%** of trailing-30d spend affected.
-- Never propose a campaign pause here. That is `fv-kill-losing-campaigns` (v2).
+- Never propose a campaign pause here. That is `kill-losing-campaigns` (v2).
 
 ## Write path — first-party, via the FullVision gateway
 
@@ -74,7 +74,7 @@ payers, attributed revenue, ad group, and the corroborating signal.
 
 ## Refuse when
 
-- `fv-data-health` returns 🚩.
+- `data-health` returns 🚩.
 - The measurable window is shorter than 90 days — say how long it is and re-run later.
 - Fewer than **5** terms clear the thresholds. At that point this is manual work, not a sweep,
   and the report should say so rather than propose a token list.

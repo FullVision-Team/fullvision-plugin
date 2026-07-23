@@ -1,12 +1,12 @@
 ---
-name: fv-data-health
+name: data-health
 description: Check identity reconciliation, checkout coverage and event coverage before trusting any FullVision number. Runs standalone and as a precondition inside every other skill.
 cadence: precondition
 requires: [fullvision]
 writes: []
 ---
 
-# fv-data-health
+# data-health
 
 Bad coverage means every downstream number is a lie. This skill's job is to say so, loudly,
 **before** a recommendation gets made on top of it — not to recommend anything itself.

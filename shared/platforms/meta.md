@@ -15,7 +15,7 @@ Two consequences that must appear in any report quoting Meta ROAS:
    together on raw ROAS compares a measurement to a forecast.
 2. **The multiplier is a workspace setting and it can be wrong.** If `pltv_multiplier`
    over-states realised LTV/first-charge by more than 40%, Meta is bidding hard on a number
-   the business never collects. `fv-verify-revenue-feedback-loop` checks this explicitly.
+   the business never collects. `verify-revenue-feedback-loop` checks this explicitly.
 
 ## The 7-day wall is a batch-level failure mode
 
@@ -71,4 +71,4 @@ three raise Event Match Quality, and EMQ materially affects delivery. Events use
 Floor is **100 matched**, so 300–500 raw at the B2B match rate. Sync is delta-only: entered
 contacts are added, exited contacts are removed, in ≤10k batches with `session_id` +
 `batch_seq` chaining. Consent rules are identical to Google's — hashing is not a legal basis.
-See `fv-build-audience`.
+See `build-audience`.
