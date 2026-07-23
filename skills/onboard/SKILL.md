@@ -198,8 +198,9 @@ connection, and asking for one costs trust.
 
 ### Phase 8 — Hand off
 
-Run `data-health` and report the three coverage numbers, so the user starts with a calibrated
-sense of what their data can support. Then hand off to `capabilities` for what to do next.
+Call `fullvision:check_data_health` and report the three coverage numbers, so the user starts
+with a calibrated sense of what their data can support. Then call `fullvision:get_capabilities`
+for what to do next.
 
 Say clearly what is still missing and what it would unlock. A user who stopped after the
 tracker should know their ROAS numbers are traffic-only until Stripe is connected.

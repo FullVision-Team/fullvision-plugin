@@ -20,7 +20,7 @@ Read `shared/reading-fullvision-data.md`, `shared/safety-rails.md` and
 
 ## Steps
 
-1. **Precondition:** run `data-health`. On 🚩, abort — you would be mailing people based on
+1. **Precondition:** call `fullvision:check_data_health`. On red, abort — you would be mailing people based on
    a broken identity graph, which is how the wrong human gets someone else's email.
 2. **Define churn correctly.** Call `fullvision:get_guidance` with domain `churn` **first**.
    Churn is not `subscription.status = 'canceled'`; delinquent churn, voluntary churn and
@@ -87,7 +87,7 @@ single blended number, because the four segments have genuinely different odds.
 
 ## Refuse when
 
-- `data-health` returns 🚩.
+- `fullvision:check_data_health` returns red.
 - The marketing-consent field is absent from the data.
 - No segment clears the 25-contact minimum.
 - The account churned fewer than **40 customers** in total over the window — at that volume

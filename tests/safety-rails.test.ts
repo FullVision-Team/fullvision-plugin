@@ -16,13 +16,12 @@ describe("safety rails", () => {
   );
 
   it.each(skills.filter(isAnalysisSkill).map((s) => [s.dir, s] as const))(
-    "%s runs data-health as a precondition",
+    "%s calls check_data_health as a precondition",
     (_dir, skill) => {
-      // capabilities summarises health rather than gating on it. onboard is not
-      // exempt: it has no data to check while running, but it must still hand the user
-      // their coverage numbers at the end, so the assertion below applies to it.
-      if (skill.dir === "data-health" || skill.dir === "capabilities") return;
-      expect(skill.body).toContain("data-health");
+      // data-health is now a gateway tool (fullvision:check_data_health), not a skill.
+      // onboard is not exempt: it has no data to check while running, but it must still
+      // hand the user their coverage numbers at the end via the same tool.
+      expect(skill.body).toContain("check_data_health");
     },
   );
 

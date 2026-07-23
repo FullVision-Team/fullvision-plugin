@@ -26,8 +26,12 @@ nothing connected. `onboard` walks you through signup, installs the tracker **in
 actual codebase** as a pull request, connects Stripe and your ad platforms, and does not
 call a step done until it can see the data arriving.
 
-Already set up? `/fullvision:capabilities` tells you what works right now with what you
-have connected, and names the one thing worth connecting next.
+Already set up? Call `fullvision:get_capabilities` — it tells you what works right now with
+what you have connected, and names the one thing worth connecting next.
+
+Your weekly Google Ads session is one command: `/fullvision:google-ads-review`. It verifies
+that closed Stripe revenue is reaching Google as conversion signal, finds the terms that spend
+money and produce zero payers, and stages the fixes for you to confirm.
 
 ## Setup
 
@@ -58,10 +62,7 @@ loaded at once. Deferred loading fetches only the tools a skill actually names.
 |---|---|---|
 | `onboard` | on install | Zero to first attributed data — signup, tracker installed in your repo, Stripe, ads |
 | `login` | on demand | Connect this machine — browser login, read-only key, no pasting |
-| `capabilities` | on demand | What's usable right now, and what to connect next |
-| `data-health` | precondition | Is the data trustworthy? Runs inside every other skill |
-| `verify-revenue-feedback-loop` | weekly | Is closed revenue actually reaching Google/Meta/LinkedIn? |
-| `cut-wasted-spend` | weekly | Terms that spend money and produce zero payers → negative keywords |
+| `google-ads-review` | weekly | The weekly Google session — verify the revenue loop, cut zero-payer spend, stage budget fixes |
 | `find-leaky-pages` | weekly | Pages ranked by revenue lost, not bounce rate |
 | `fix-page` | on demand | Applies the fix — GitHub PR or Webflow write |
 | `design-page-test` | on demand | Can this page power an A/B test? Usually no, with the numbers |

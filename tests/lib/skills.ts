@@ -50,7 +50,7 @@ export function loadSkills(): Skill[] {
 }
 
 // Skills that establish the FullVision connection rather than read through it.
-// The analysis contracts — requires: [fullvision], the data-health
+// The analysis contracts — requires: [fullvision], the check_data_health
 // precondition, the shared reading protocol — all presuppose a working
 // connection, so they cannot apply to the skill whose job is to create one.
 // Kept as an explicit allowlist so adding a skill here is a deliberate act.

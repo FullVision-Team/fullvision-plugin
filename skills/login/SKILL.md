@@ -33,8 +33,8 @@ must run before `fullvision` is usable. It is the only skill that works from a c
    That is the one case a restart is needed.
 
 4. **Hand off** — suggest, do not auto-run. If they are mid-onboarding, `onboard` resumes
-   at the tracker step. Otherwise `capabilities` is the skill that
-   maps what the user can actually do now.
+   at the tracker step. Otherwise `fullvision:get_capabilities` maps what the user can
+   actually do now.
 
 ## What the user is approving
 

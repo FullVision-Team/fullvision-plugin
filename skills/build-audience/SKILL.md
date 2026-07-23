@@ -105,4 +105,4 @@ Audience create/sync is not exposed on the FullVision MCP surface. Per
 - The segment cannot clear any destination's floor, including email.
 - The description implies a special-category segment (health, ethnicity, political, sexual
   orientation, religion, trade-union membership) — refuse outright, in any jurisdiction.
-- `data-health` returns 🚩 — segment membership would be built on broken identity data.
+- `fullvision:check_data_health` returns red — segment membership would be built on broken identity data.
