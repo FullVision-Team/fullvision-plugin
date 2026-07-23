@@ -23,6 +23,10 @@ plus weeks-of-app-review burden is gone with it.
 
 ## Write capability — first-party, via FullVision
 
+> **Hidden for now.** The `linkedin_propose_*` tools below exist server-side but are not exposed
+> on the MCP surface yet — Google is the only mutable platform today. Treat LinkedIn as
+> reads-only (via `fullvision:query_view`) and never promise a LinkedIn write in a session.
+
 LinkedIn campaign changes go through FullVision's own MCP surface, not a community server (the
 old one is now removed). The OAuth grant FullVision already holds (`rw_ads`, MDP-approved) is
 read **and** write.

@@ -27,6 +27,10 @@ A sustained non-zero `expired` count is a broken loop, not noise. Treat it as an
 
 ## Write capability — first-party, via FullVision
 
+> **Hidden for now.** The `meta_propose_*` tools below exist server-side but are not exposed on
+> the MCP surface yet — Google is the only mutable platform today. Treat Meta as reads-only
+> (via `fullvision:query_view`) and never promise a Meta write in a session.
+
 Meta campaign changes go through FullVision's own MCP surface, not a Meta server. The OAuth
 grant FullVision already holds (`ads_management`, Advanced Access) is read **and** write — the
 same connection the customer completed in the FullVision app for spend sync.

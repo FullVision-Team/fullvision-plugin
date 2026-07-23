@@ -57,8 +57,8 @@ Follow `shared/report-format.md`, with the verdict replaced by the matrix:
 | fv-data-health | ✅ available | — |
 | fv-cut-wasted-spend | ✅ available | negatives proposed via `fullvision:google_propose_negative_keywords` (undoable, proposed→apply) |
 | Google Ads | ✅ manage | GAQL reads via `fullvision:google_ads_search`; pause/enable + budget via `fullvision:google_propose_*` (undoable, proposed→apply) |
-| Meta Ads | ✅ manage | pause/enable + ad-set budget via `fullvision:meta_propose_campaign_status` (undoable, proposed→apply) |
-| LinkedIn Ads | ✅ manage | pause/enable + campaign-group budget via `fullvision:linkedin_propose_campaign_group_budget` (undoable) |
+| Meta Ads | ⏸ reads only | write tools are hidden from the MCP surface for now (Google-only mutate); reads via `fullvision:query_view` ads views |
+| LinkedIn Ads | ⏸ reads only | write tools are hidden from the MCP surface for now (Google-only mutate); reads via `fullvision:query_view` ads views |
 | … | | |
 
 ## Connect next: <server>
@@ -70,12 +70,13 @@ Follow `shared/report-format.md`, with the verdict replaced by the matrix:
 - **`fv-build-audience` is read-only in v1** — audience activation is not on the FullVision
   MCP surface yet. It sizes, floor-checks and consent-gates the segment, then hands off to the
   FullVision app.
-- **Google, Meta and LinkedIn ad management is first-party and undoable.** Reads go through
+- **Google Ads management is first-party and undoable.** Reads go through
   `fullvision:google_ads_search` (GAQL passthrough) / `fullvision:query_view`; pause/enable and
-  budget changes go through `fullvision:google_propose_*` / `fullvision:meta_propose_*` /
-  `fullvision:linkedin_propose_*` — reads live state, stores an undo, applied only by proposal
-  id after an explicit yes. No vendor write server, no separate token. Out of v1: bidding,
-  targeting, creative, create/delete.
+  budget changes go through `fullvision:google_propose_*` — reads live state, stores an undo,
+  applied only by proposal id after an explicit yes. No vendor write server, no separate token.
+  Meta and LinkedIn write tools exist server-side but are hidden from the MCP surface for now —
+  Google is the only mutable platform; say so rather than promising Meta/LinkedIn writes.
+  Out of v1: bidding, targeting, creative, create/delete.
 - **Three MCP servers is a lot of tool schema.** Recommend enabling deferred tool loading
   (`ENABLE_TOOL_SEARCH`) — tool-selection accuracy degrades measurably under heavy MCP load.
 
