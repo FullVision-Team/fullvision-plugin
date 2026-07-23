@@ -43,7 +43,19 @@ upload loops are not checked or mutated here.
      `view:customer-ltv`. Below **20 closed deals/month**, Google cannot learn from payment
      events alone. Recommend a mid-funnel conversion goal with an assigned proxy value —
      derive it from the workspace's own MQL→close rate × average deal value (practitioner
-     defaults MQL ≈ €500, SQL ≈ €2,500, not to be used literally).
+     defaults MQL ≈ €500, SQL ≈ €2,500, not to be used literally). This recommendation can now
+     be **staged into the same change-list**, not just described: propose the custom goal over
+     the mid-funnel conversion action with `fullvision:google_propose_custom_conversion_goal`,
+     then attach it to the affected campaign(s) with
+     `fullvision:google_propose_campaign_conversion_goals` — the re-routing chain in
+     `shared/platforms/google.md` (Conversion goals). Still one apply gate, two turns.
+   - **Conversion-goal sanity.** GAQL the four goal resources per
+     `shared/platforms/google.md` and flag misconfigurations: a campaign optimising for a
+     category with **zero Stripe-linked conversions**, or account defaults biddable on a
+     category no campaign actually pays on. Correct at the right level —
+     `fullvision:google_propose_campaign_conversion_goals` for one campaign,
+     `fullvision:google_propose_conversion_goal_settings` for the account defaults — staged in
+     the same change-list.
 
 3. **Establish the measurable window.** `fullvision:query_view` on `view:ads-measurement-start`.
    Everything before that date is unmeasurable, not wasteful. All spend figures below are
@@ -67,11 +79,14 @@ upload loops are not checked or mutated here.
 
 7. **Emit ONE consolidated change-list, then STOP.** Stage each change through the matching
    propose tool — `fullvision:google_propose_negative_keywords`,
-   `fullvision:google_propose_campaign_budget`, `fullvision:google_propose_campaign_status` —
-   each returning a proposal id. Do not apply in this turn. Ever. Two turns, always
-   (`shared/safety-rails.md` §1). The feedback-loop findings from step 2 are diagnosis, not a
-   platform write — report them as recommendations the user applies in the Google UI / export
-   settings.
+   `fullvision:google_propose_campaign_budget`, `fullvision:google_propose_campaign_status`, and
+   the conversion-goal tools from step 2 (`fullvision:google_propose_custom_conversion_goal`,
+   `fullvision:google_propose_campaign_conversion_goals`,
+   `fullvision:google_propose_conversion_goal_settings`) — each returning a proposal id. Do not
+   apply in this turn. Ever. Two turns, always (`shared/safety-rails.md` §1). The upload-failure
+   and terminal-expired findings from step 2 remain diagnosis, not a platform write — report
+   them as recommendations the user applies in the Google UI / export settings; only the
+   conversion-goal changes are staged.
 
 8. **On explicit confirmation:** apply each confirmed id via `fullvision:apply_proposal` — it
    reads live account state, stores a computed undo, and mutates only by id. Remind the user

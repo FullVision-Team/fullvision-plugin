@@ -6,6 +6,25 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 ## [Unreleased]
 
 ### Added
+- **Google Ads conversion-goal management** (three gateway tools shipped from `full_distrib`, not
+  this repo): `fullvision:google_propose_conversion_goal_settings` (account-level
+  CustomerConversionGoal biddable defaults, per category×origin, ≤5, update-only),
+  `fullvision:google_propose_campaign_conversion_goals` (one campaign — `goal_config_level`
+  CUSTOMER|CAMPAIGN, attach/clear a custom goal, per-pair biddable flags, ≤10), and
+  `fullvision:google_propose_custom_conversion_goal` (create a custom goal from 1–10 conversion
+  actions; revert = REMOVED). All propose-only, applied via `apply_proposal`, reversible with
+  `revert_mutation`. `shared/platforms/google.md` gains a "Conversion goals" section encoding the
+  four-object model (CustomerConversionGoal / CampaignConversionGoal /
+  ConversionGoalCampaignConfig / CustomConversionGoal), the MCC conversion-customer resolution,
+  the no-ad-group-level fact, the GAQL read resources, and the lead-form→qualified-lead
+  re-routing chain. **Requires the gateway deploy landing first — do not release (or merge) until
+  those PRs are live; the live contract test fails on the three new tool names until then.**
+- **`google-ads-review` extended to conversion goals.** The mid-funnel-goal recommendation
+  (below ~20 closed deals/month) can now **stage** the change — custom goal + campaign attach —
+  in the same change-list, behind the same `apply_proposal` gate, instead of only describing it.
+  The review also now flags conversion-goal misconfigurations (e.g. a campaign optimising for a
+  category with zero Stripe-linked conversions). Conversion goals are no longer out of v1;
+  bidding strategies, targeting, creative and create/delete remain out.
 - **`google-ads-review` — one weekly Google Ads session, one command.** Merges the substance
   of the old `cut-wasted-spend` and `verify-revenue-feedback-loop` skills: precondition on
   `fullvision:check_data_health`, verify closed Stripe revenue is reaching Google as conversion
