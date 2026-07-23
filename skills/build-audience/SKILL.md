@@ -1,12 +1,12 @@
 ---
-name: fv-build-audience
+name: build-audience
 description: Turn a described segment into a sized, floor-checked, consent-gated audience with a chosen destination. Emits an activation change-list; activation itself happens in the FullVision app.
 cadence: on-demand
 requires: [fullvision]
 writes: []
 ---
 
-# fv-build-audience
+# build-audience
 
 Describe a segment, get back a real one: sized, checked against the destination platform's
 minimum, and gated on consent. The gate is the point of this skill — the segment SQL is the
@@ -105,4 +105,4 @@ Audience create/sync is not exposed on the FullVision MCP surface. Per
 - The segment cannot clear any destination's floor, including email.
 - The description implies a special-category segment (health, ethnicity, political, sexual
   orientation, religion, trade-union membership) — refuse outright, in any jurisdiction.
-- `fv-data-health` returns 🚩 — segment membership would be built on broken identity data.
+- `data-health` returns 🚩 — segment membership would be built on broken identity data.

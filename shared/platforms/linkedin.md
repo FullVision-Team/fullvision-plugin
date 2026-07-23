@@ -64,4 +64,4 @@ it clears the n gate. Do not let the spend figure alone trigger a recommendation
 
 Floor is **300 matched** and LinkedIn's own recommendation is 50,000 — so a raw list of
 **1,500+** at the B2B match rate, the highest bar of the three platforms. Audience delivery
-stays dark until `audiences_enabled` is set on the connection. See `fv-build-audience`.
+stays dark until `audiences_enabled` is set on the connection. See `build-audience`.

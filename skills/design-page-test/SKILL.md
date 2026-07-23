@@ -1,12 +1,12 @@
 ---
-name: fv-design-page-test
+name: design-page-test
 description: Decide whether a page can support an A/B test at all, and if it can, produce a powered test spec with sample size, duration and a pre-committed stop rule. Most B2B pages cannot, and saying so is the main job.
 cadence: on-demand
 requires: [fullvision]
 writes: []
 ---
 
-# fv-design-page-test
+# design-page-test
 
 Most of the time this skill's answer is **no**, and that is the value it adds. An underpowered
 A/B test does not return "no result" — it returns a *random winner* with a plausible-looking
@@ -17,7 +17,7 @@ Read `shared/reading-fullvision-data.md` and `shared/sparse-data.md` before call
 
 ## Steps
 
-1. **Precondition:** run `fv-data-health`. On 🚩, abort — you cannot power a test on a metric
+1. **Precondition:** run `data-health`. On 🚩, abort — you cannot power a test on a metric
    you cannot measure.
 2. **Measure the page honestly.** `fullvision:query_view` on `view:page-performance` for
    sessions and `view:page-customers` for the conversion baseline. Use the page's own trailing
@@ -44,13 +44,13 @@ Read `shared/reading-fullvision-data.md` and `shared/sparse-data.md` before call
    contaminate the comparison faster than the sample accumulates.
 5. **When the answer is no, give the alternative that actually works** — per
    `shared/sparse-data.md` §5: 5 user tests surface ~80% of usability issues; 10–15 session
-   recordings surface 70–85%. Pair it with the friction evidence from `fv-find-leaky-pages`
+   recordings surface 70–85%. Pair it with the friction evidence from `find-leaky-pages`
    (`view:scroll-depth-by-page`, `view:rageclicks-by-page`, `view:form-performance`) so the
    qualitative work starts from a hypothesis rather than from scratch.
 6. **When the answer is yes, write the full spec and pre-commit the stop rule**: hypothesis,
    the single primary metric, sample size per arm, planned duration and end date, and the
    decision rule written **before** the test starts. Then hand the variant build to
-   `fv-fix-page`.
+   `fix-page`.
 
 ## Thresholds — fixed
 
@@ -80,10 +80,10 @@ at each mde, never a hedge.
 
 ## Refuse when
 
-- `fv-data-health` returns 🚩.
+- `data-health` returns 🚩.
 - The page has fewer than **500 sessions** in the trailing 90 days — there is not enough data
   to compute a baseline, let alone a test.
 - The proposed variant changes pricing, legal copy, or anything in
-  `fv-fix-page`'s out-of-scope list.
+  `fix-page`'s out-of-scope list.
 - The requester wants a test on a metric FullVision cannot observe end to end. Say which part
   of the chain is missing.

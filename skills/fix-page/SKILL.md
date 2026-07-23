@@ -1,12 +1,12 @@
 ---
-name: fv-fix-page
-description: Apply a landing-page fix — a GitHub pull request against the site repo, or a Webflow CMS/page write. Takes a diagnosis from fv-find-leaky-pages and turns it into a reviewable change.
+name: fix-page
+description: Apply a landing-page fix — a GitHub pull request against the site repo, or a Webflow CMS/page write. Takes a diagnosis from find-leaky-pages and turns it into a reviewable change.
 cadence: on-demand
 requires: [fullvision]
 writes: [webflow]
 ---
 
-# fv-fix-page
+# fix-page
 
 The only skill in v1 that changes the website. Two write targets, user-selectable.
 
@@ -20,7 +20,7 @@ Read `shared/reading-fullvision-data.md`, `shared/safety-rails.md` and
 - **`webflow`** — the site is a Webflow project. Use the `webflow` MCP server for CMS and page
   writes.
 
-`fv-capabilities` detects which is available. If both are, **ask once** and record the answer in
+`capabilities` detects which is available. If both are, **ask once** and record the answer in
 `.fullvision/config.json` (`{"site_write_target": "github"}`) so later runs do not re-ask.
 If neither is available, run read-only per `shared/safety-rails.md` §9 and emit the change-list
 as a diff or a copy-pasteable content block.
@@ -63,7 +63,7 @@ server at all, so Webflow being absent must not make this skill unavailable.
 
 ## Refuse when
 
-- `fv-data-health` returns 🚩 — you would be fixing a page based on incomplete behaviour data.
+- `data-health` returns 🚩 — you would be fixing a page based on incomplete behaviour data.
 - The page has fewer than **500 sessions** in the trailing 90 days. There is no evidence to
   act on; say so.
 - The requested change is outside the scope limits above.

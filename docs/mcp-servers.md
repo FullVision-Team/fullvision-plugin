@@ -14,7 +14,7 @@ servers hold credentials that can spend customer money.
 
 | Server | Read | Write | Customer auth burden |
 |---|---|---|---|
-| fullvision | 44 tools over 73 views + Google Ads GAQL passthrough | custom views, funnels + Google/Meta/LinkedIn campaign mutate (pause/enable + budget, propose→apply, undoable) | 1-click browser login (`/fullvision:fv-login`) |
+| fullvision | 44 tools over 73 views + Google Ads GAQL passthrough | custom views, funnels + Google/Meta/LinkedIn campaign mutate (pause/enable + budget, propose→apply, undoable) | 1-click browser login (`/fullvision:login`) |
 | webflow | ✅ | ✅ CMS / pages | 1-click OAuth |
 | brevo | ✅ | ✅ lists / segments / campaigns | API key |
 

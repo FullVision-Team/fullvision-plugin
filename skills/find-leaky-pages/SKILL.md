@@ -1,12 +1,12 @@
 ---
-name: fv-find-leaky-pages
-description: Rank landing pages by revenue lost, not bounce rate, and produce a shortlist with evidence for each. Feeds fv-fix-page.
+name: find-leaky-pages
+description: Rank landing pages by revenue lost, not bounce rate, and produce a shortlist with evidence for each. Feeds fix-page.
 cadence: weekly
 requires: [fullvision]
 writes: []
 ---
 
-# fv-find-leaky-pages
+# find-leaky-pages
 
 Bounce rate ranks pages by how annoying they are. This ranks them by **how much money they
 cost**, which is a different and much shorter list.
@@ -15,7 +15,7 @@ Read `shared/reading-fullvision-data.md` and `shared/sparse-data.md` before call
 
 ## Steps
 
-1. **Precondition:** run `fv-data-health`. On 🚩, abort.
+1. **Precondition:** run `data-health`. On 🚩, abort.
 2. **Pull traffic and revenue per page.** `fullvision:query_view` on `view:page-performance`
    and `view:page-customers` for the trailing 90 days.
 3. **Compute lost revenue per page:**
@@ -34,7 +34,7 @@ Read `shared/reading-fullvision-data.md` and `shared/sparse-data.md` before call
 5. **Separate paid from organic.** A paid landing page that leaks is urgent (money is flowing
    into it right now); an organic page that leaks is a content job. Use `view:ad-landing-pages`
    to split them, and rank paid first.
-6. **Hand off.** Name `fv-fix-page` and the specific URL for the top 3. Do not attempt fixes
+6. **Hand off.** Name `fix-page` and the specific URL for the top 3. Do not attempt fixes
    here.
 
 ## Thresholds — fixed
@@ -58,6 +58,6 @@ lost revenue, the dominant friction signal, and paid/organic.
 
 ## Refuse when
 
-- `fv-data-health` returns 🚩.
+- `data-health` returns 🚩.
 - Fewer than 3 pages clear the thresholds — report the account is too small for this sweep and
-  point at `fv-diagnose-page` (v2) for single-URL work.
+  point at `diagnose-page` (v2) for single-URL work.

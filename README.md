@@ -18,24 +18,24 @@ windows. Every skill here exists to use that.
 Then, in the repository that serves your website:
 
 ```
-/fullvision:fv-onboard
+/fullvision:onboard
 ```
 
 That is the only instruction, and it works from a standing start — no account, no API key,
-nothing connected. `fv-onboard` walks you through signup, installs the tracker **into your
+nothing connected. `onboard` walks you through signup, installs the tracker **into your
 actual codebase** as a pull request, connects Stripe and your ad platforms, and does not
 call a step done until it can see the data arriving.
 
-Already set up? `/fullvision:fv-capabilities` tells you what works right now with what you
+Already set up? `/fullvision:capabilities` tells you what works right now with what you
 have connected, and names the one thing worth connecting next.
 
 ## Setup
 
-Nothing to do up front — `fv-onboard` runs the login for you at the right moment. To connect
+Nothing to do up front — `onboard` runs the login for you at the right moment. To connect
 a machine on its own (a second laptop, a re-login after 90 days, switching workspace):
 
 ```
-/fullvision:fv-login
+/fullvision:login
 ```
 
 This opens your browser, you pick a workspace and click Authorize, and the key is saved to
@@ -56,19 +56,19 @@ loaded at once. Deferred loading fetches only the tools a skill actually names.
 
 | Skill | Cadence | Job |
 |---|---|---|
-| `fv-onboard` | on install | Zero to first attributed data — signup, tracker installed in your repo, Stripe, ads |
-| `fv-login` | on demand | Connect this machine — browser login, read-only key, no pasting |
-| `fv-capabilities` | on demand | What's usable right now, and what to connect next |
-| `fv-data-health` | precondition | Is the data trustworthy? Runs inside every other skill |
-| `fv-verify-revenue-feedback-loop` | weekly | Is closed revenue actually reaching Google/Meta/LinkedIn? |
-| `fv-cut-wasted-spend` | weekly | Terms that spend money and produce zero payers → negative keywords |
-| `fv-find-leaky-pages` | weekly | Pages ranked by revenue lost, not bounce rate |
-| `fv-fix-page` | on demand | Applies the fix — GitHub PR or Webflow write |
-| `fv-design-page-test` | on demand | Can this page power an A/B test? Usually no, with the numbers |
-| `fv-find-keyword-gaps` | monthly | Queries that impress but never pay, ranked by revenue |
-| `fv-fix-striking-distance` | monthly | Positions 5–20 where a snippet rewrite moves real money |
-| `fv-win-back-churned` | monthly | Lapsed customers worth recovering → a staged Brevo list |
-| `fv-build-audience` | on demand | Sized, floor-checked, consent-gated segments (incl. retargeting) |
+| `onboard` | on install | Zero to first attributed data — signup, tracker installed in your repo, Stripe, ads |
+| `login` | on demand | Connect this machine — browser login, read-only key, no pasting |
+| `capabilities` | on demand | What's usable right now, and what to connect next |
+| `data-health` | precondition | Is the data trustworthy? Runs inside every other skill |
+| `verify-revenue-feedback-loop` | weekly | Is closed revenue actually reaching Google/Meta/LinkedIn? |
+| `cut-wasted-spend` | weekly | Terms that spend money and produce zero payers → negative keywords |
+| `find-leaky-pages` | weekly | Pages ranked by revenue lost, not bounce rate |
+| `fix-page` | on demand | Applies the fix — GitHub PR or Webflow write |
+| `design-page-test` | on demand | Can this page power an A/B test? Usually no, with the numbers |
+| `find-keyword-gaps` | monthly | Queries that impress but never pay, ranked by revenue |
+| `fix-striking-distance` | monthly | Positions 5–20 where a snippet rewrite moves real money |
+| `win-back-churned` | monthly | Lapsed customers worth recovering → a staged Brevo list |
+| `build-audience` | on demand | Sized, floor-checked, consent-gated segments (incl. retargeting) |
 
 ## Why there are no "specialist" agents
 
@@ -87,7 +87,7 @@ reason FullVision exists. Three per-platform agents would each answer confidentl
 of the evidence.
 
 So: platform knowledge lives in `shared/platforms/*.md` and is read by whichever skill needs
-it. Jobs are skills. The only subagent is `fv-analyst`, and it earns its place on context
+it. Jobs are skills. The only subagent is `analyst`, and it earns its place on context
 isolation alone — deep multi-view digs whose raw rows nobody needs to see.
 
 ## How it behaves
@@ -110,7 +110,7 @@ per contact — hashing is not a legal basis. Email activation is the default fo
 
 ## Known limitations
 
-- **`fv-build-audience` hands off to the FullVision app** for activation.
+- **`build-audience` hands off to the FullVision app** for activation.
 - **Irreversible actions are out of scope** — no deleting campaigns, audiences or pages.
 
 ## Contributing

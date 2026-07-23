@@ -1,12 +1,12 @@
 ---
-name: fv-win-back-churned
+name: win-back-churned
 description: Identify churned customers worth winning back, segmented by why they left and what they were worth, and stage a Brevo list plus a campaign brief. Emails real people, so every gate here is hard.
 cadence: monthly
 requires: [fullvision, brevo]
 writes: [brevo]
 ---
 
-# fv-win-back-churned
+# win-back-churned
 
 The cheapest revenue in the business is a customer who already paid you once. It is also the
 easiest to destroy permanently: a badly targeted win-back mail to someone who left angry buys
@@ -20,7 +20,7 @@ Read `shared/reading-fullvision-data.md`, `shared/safety-rails.md` and
 
 ## Steps
 
-1. **Precondition:** run `fv-data-health`. On 🚩, abort — you would be mailing people based on
+1. **Precondition:** run `data-health`. On 🚩, abort — you would be mailing people based on
    a broken identity graph, which is how the wrong human gets someone else's email.
 2. **Define churn correctly.** Call `fullvision:get_guidance` with domain `churn` **first**.
    Churn is not `subscription.status = 'canceled'`; delinquent churn, voluntary churn and
@@ -41,7 +41,7 @@ Read `shared/reading-fullvision-data.md`, `shared/safety-rails.md` and
    | Contracted-then-left | downgraded, then cancelled | medium — price or scope objection |
 
 5. **Check consent and suppression before proposing anything.** Per `shared/safety-rails.md`
-   and the consent discipline in `fv-build-audience`: a lapsed customer is **not** an
+   and the consent discipline in `build-audience`: a lapsed customer is **not** an
    automatic legitimate-interest recipient. Require a live marketing-consent flag, and
    exclude anyone already unsubscribed, bounced, or complaint-flagged in Brevo. If the consent
    field does not exist in the data, that is a refusal, not a caveat.
@@ -87,7 +87,7 @@ single blended number, because the four segments have genuinely different odds.
 
 ## Refuse when
 
-- `fv-data-health` returns 🚩.
+- `data-health` returns 🚩.
 - The marketing-consent field is absent from the data.
 - No segment clears the 25-contact minimum.
 - The account churned fewer than **40 customers** in total over the window — at that volume

@@ -1,5 +1,5 @@
 ---
-name: fv-analyst
+name: analyst
 description: Isolated FullVision data analyst. Use for multi-view investigations where only the conclusion matters — segment sizing, cross-view correlation, cohort digging. Returns findings and the numbers behind them, never raw rows.
 tools: mcp__fullvision__query_view, mcp__fullvision__run_sql_query, mcp__fullvision__list_views, mcp__fullvision__list_metrics, mcp__fullvision__get_guidance, mcp__fullvision__get_table_schema, mcp__fullvision__list_tables
 ---

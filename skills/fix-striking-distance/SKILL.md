@@ -1,16 +1,16 @@
 ---
-name: fv-fix-striking-distance
-description: Find pages ranking just off page one where a title and meta rewrite moves real revenue, size the gain, and hand the specific edit to fv-fix-page. Ranks by revenue at stake, not by position.
+name: fix-striking-distance
+description: Find pages ranking just off page one where a title and meta rewrite moves real revenue, size the gain, and hand the specific edit to fix-page. Ranks by revenue at stake, not by position.
 cadence: monthly
 requires: [fullvision]
 writes: []
 ---
 
-# fv-fix-striking-distance
+# fix-striking-distance
 
 Positions 5–20 are where the cheapest SEO revenue lives: the page already ranks, Google
 already trusts it, and the gap is usually the snippet rather than the content. This skill
-finds those pages and sizes the prize. It does **not** edit anything — `fv-fix-page` owns the
+finds those pages and sizes the prize. It does **not** edit anything — `fix-page` owns the
 write path, and duplicating that machinery here would mean two skills that can change a
 website.
 
@@ -18,7 +18,7 @@ Read `shared/reading-fullvision-data.md` before calling anything.
 
 ## Steps
 
-1. **Precondition:** run `fv-data-health`. On 🚩, abort.
+1. **Precondition:** run `data-health`. On 🚩, abort.
 2. **Pull the striking-distance set.** `fullvision:query_view` on
    `view:gsc-striking-candidates`. This view exists precisely for this job and nothing
    currently uses it.
@@ -38,10 +38,10 @@ Read `shared/reading-fullvision-data.md` before calling anything.
    median and say you did. Apply shrinkage per `shared/sparse-data.md` §3, k = 10.
 5. **Diagnose the specific gap per page.** Low CTR at a good position is a snippet problem
    (title, meta description, intent mismatch). Good CTR with no conversions is a landing-page
-   problem, which is `fv-find-leaky-pages`' job — route it there instead of proposing a title
+   problem, which is `find-leaky-pages`' job — route it there instead of proposing a title
    rewrite that cannot fix it.
 6. **Write the proposed title and meta description** for each page, with the current one
-   alongside for comparison, then **hand off to `fv-fix-page`** with the URL and the exact
+   alongside for comparison, then **hand off to `fix-page`** with the URL and the exact
    proposed strings. That skill applies it as a GitHub PR or a Webflow write under the
    two-turn rule.
 
@@ -68,8 +68,8 @@ title/meta.
 
 ## Refuse when
 
-- `fv-data-health` returns 🚩.
+- `data-health` returns 🚩.
 - No `gsc_connection` exists for the workspace.
 - Fewer than 3 pages clear the thresholds — say the account is too small for this sweep.
-- The page's problem is conversion rather than CTR — route to `fv-find-leaky-pages` instead of
+- The page's problem is conversion rather than CTR — route to `find-leaky-pages` instead of
   proposing a snippet rewrite that cannot move revenue.

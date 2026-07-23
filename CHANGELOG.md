@@ -26,6 +26,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   full_distrib PRs) — do not release until those are live.**
 
 ### Changed
+- **Dropped the `fv-` prefix from every skill and agent name** (`fv-cut-wasted-spend` →
+  `cut-wasted-spend`, `fv-analyst` → `analyst`, …). Skills already surface namespaced as
+  `fullvision:<name>`, so the prefix said "fullvision" twice. Cross-references, tests and docs
+  updated; the `scripts/fv-*.mjs` filenames and the `fv-fix/<slug>` site-repo branch prefix are
+  unchanged (they are not skill names).
 - **Renamed `fv-setup` → `fv-capabilities`**, cadence `on-install` → `on-demand`. It answers
   "what can I do today", which is a question you ask *after* setup.
 - **`fv-login` cadence `on-install` → `on-demand`.** Two skills claiming to be the first thing

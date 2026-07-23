@@ -16,13 +16,13 @@ describe("safety rails", () => {
   );
 
   it.each(skills.filter(isAnalysisSkill).map((s) => [s.dir, s] as const))(
-    "%s runs fv-data-health as a precondition",
+    "%s runs data-health as a precondition",
     (_dir, skill) => {
-      // fv-capabilities summarises health rather than gating on it. fv-onboard is not
+      // capabilities summarises health rather than gating on it. onboard is not
       // exempt: it has no data to check while running, but it must still hand the user
       // their coverage numbers at the end, so the assertion below applies to it.
-      if (skill.dir === "fv-data-health" || skill.dir === "fv-capabilities") return;
-      expect(skill.body).toContain("fv-data-health");
+      if (skill.dir === "data-health" || skill.dir === "capabilities") return;
+      expect(skill.body).toContain("data-health");
     },
   );
 

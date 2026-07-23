@@ -1,12 +1,12 @@
 ---
-name: fv-find-keyword-gaps
+name: find-keyword-gaps
 description: Find search queries that already impress but do not convert to paying customers, and queries the site ranks for by accident. Ranks SEO opportunity by revenue, not by search volume.
 cadence: monthly
 requires: [fullvision]
 writes: []
 ---
 
-# fv-find-keyword-gaps
+# find-keyword-gaps
 
 Keyword tools rank opportunity by search volume, which is a proxy for traffic, which is a
 proxy for money. FullVision does not need the proxies — it can see which queries produced
@@ -16,7 +16,7 @@ Read `shared/reading-fullvision-data.md` before calling anything.
 
 ## Steps
 
-1. **Precondition:** run `fv-data-health`. On 🚩, abort — query→revenue linkage runs through
+1. **Precondition:** run `data-health`. On 🚩, abort — query→revenue linkage runs through
    the same identity graph.
 2. **Pull the demand surface.** `fullvision:query_view` on `view:gsc-content-gap-candidates`
    for queries the site surfaces for without dedicated content, and
@@ -29,7 +29,7 @@ Read `shared/reading-fullvision-data.md` before calling anything.
    | Bucket | Shape | Action |
    |---|---|---|
    | **Proven** | impressions + payers > 0 | more content on this theme; highest confidence |
-   | **Leaking** | impressions high, clicks low | a title/meta job → `fv-fix-striking-distance` |
+   | **Leaking** | impressions high, clicks low | a title/meta job → `fix-striking-distance` |
    | **Hollow** | clicks high, payers 0 over the window | wrong-intent traffic; do **not** invest more |
    | **Unproven** | impressions low, no payers | genuinely unknown; rank last, never first |
 
@@ -38,7 +38,7 @@ Read `shared/reading-fullvision-data.md` before calling anything.
 5. **Rank by revenue-weighted opportunity**, applying shrinkage per `shared/sparse-data.md` §3
    with prior weight k = 10 against the account's median query conversion rate. A query with
    one payer is not a 100%-converting query.
-6. **Hand off.** Leaking queries go to `fv-fix-striking-distance`. Proven themes are a content
+6. **Hand off.** Leaking queries go to `fix-striking-distance`. Proven themes are a content
    brief, which is a human job — describe it, do not write the page.
 
 ## Thresholds — fixed
@@ -63,7 +63,7 @@ attributed revenue, bucket, and the recommended next step.
 
 ## Refuse when
 
-- `fv-data-health` returns 🚩.
+- `data-health` returns 🚩.
 - No `gsc_connection` exists for the workspace — this skill has no input without Search
   Console; say so and point at connecting it.
 - Fewer than 10 queries clear the impression threshold. The site is too young for a sweep;

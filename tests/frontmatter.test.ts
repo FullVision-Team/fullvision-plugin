@@ -22,7 +22,7 @@ describe("skill frontmatter", () => {
     (dir, skill) => {
       const fm = skill.frontmatter;
       expect(fm.name).toBe(dir);
-      expect(dir).toMatch(/^fv-[a-z0-9-]+$/);
+      expect(dir).toMatch(/^[a-z0-9-]+$/);
       expect(fm.description).toBeTypeOf("string");
       expect(fm.description.length).toBeGreaterThan(20);
       expect(CADENCES).toContain(fm.cadence);
