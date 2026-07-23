@@ -45,7 +45,53 @@ optimises toward whatever it receives, so a broken export silently undoes every
 recommendation. `google-ads-review` checks this as its first act, before proposing anything.
 
 Below roughly **20–30 closed deals/month** Google's bidding cannot learn from payment events
-alone — recommend a mid-funnel goal with an assigned proxy value instead.
+alone — recommend a mid-funnel goal with an assigned proxy value instead. Staging that goal is
+the "Conversion goals" section below.
+
+## Conversion goals
+
+Google's conversion-goal model has **four objects**; the gateway proposes changes to all four,
+each applied through `apply_proposal` and reversible with `revert_mutation`. All propose-only.
+
+- **CustomerConversionGoal** — account-level defaults: per conversion category×origin, whether
+  it is biddable. Auto-created by Google; the API only *updates* it. Tool:
+  `fullvision:google_propose_conversion_goal_settings` (≤5 category×origin items, update-only).
+- **CampaignConversionGoal** — one campaign's goals, one row per category×origin. Auto-created;
+  update-only.
+- **ConversionGoalCampaignConfig** — whether a campaign follows the account defaults
+  (`goal_config_level` CUSTOMER) or its own goals (CAMPAIGN), and which CustomConversionGoal it
+  attaches. Auto-created; update-only. Tool for these last two:
+  `fullvision:google_propose_campaign_conversion_goals` (one campaign — set `goal_config_level`,
+  attach/clear `custom_conversion_goal_id`, per-pair biddable flags, ≤10 pairs).
+- **CustomConversionGoal** — a named goal pointing at 1–10 specific conversion actions. The
+  **only** object created explicitly. Tool: `fullvision:google_propose_custom_conversion_goal`
+  (create from `conversion_action_ids`; revert sets status REMOVED).
+
+Facts:
+- A conversion action inside a custom goal is optimised **even when its `primary_for_goal` is
+  false** — inclusion in the goal is what counts.
+- **MCC / cross-account:** the gateway resolves the conversion customer automatically. Always
+  pass the client `customer_id`, never the manager's.
+- **No ad-group-level goals exist** — not in the API, not in the UI. Goals live at account and
+  campaign level only.
+
+Reads — all four are GAQL-queryable via `fullvision:google_ads_search`: resources
+`customer_conversion_goal`, `campaign_conversion_goal`, `conversion_goal_campaign_config`,
+`custom_conversion_goal`, plus `conversion_action` to resolve action ids.
+
+Re-routing the optimisation target (canonical chain — e.g. from a raw lead-form fill to a
+server-side-imported "qualified lead"):
+1. GAQL `conversion_action` → find the imported action's id.
+2. `fullvision:google_propose_custom_conversion_goal` from that id → `apply_proposal`.
+3. `fullvision:google_propose_campaign_conversion_goals`: `goal_config_level` CAMPAIGN, attach
+   the custom goal, and set `biddable:false` on the old category×origin pairs if only the custom
+   goal should drive optimisation → `apply_proposal`.
+
+Back out: propose `goal_config_level` CUSTOMER to resync the campaign with the account goals.
+
+**In scope now:** conversion-goal management (this section). **Still out of v1:** bidding
+strategies, targeting, creative, and create/delete of campaigns — irreversible or
+learning-resetting.
 
 ## Customer Match
 

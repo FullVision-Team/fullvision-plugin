@@ -112,7 +112,9 @@ per contact — hashing is not a legal basis. Email activation is the default fo
 ## Known limitations
 
 - **`build-audience` hands off to the FullVision app** for activation.
-- **Irreversible actions are out of scope** — no deleting campaigns, audiences or pages.
+- **Irreversible or learning-resetting actions are out of scope** — no deleting campaigns,
+  audiences or pages, and no bidding strategies, targeting or creative. Google conversion-goal
+  management is **in scope** (reversible, gated by `apply_proposal`).
 
 ## Contributing
 
