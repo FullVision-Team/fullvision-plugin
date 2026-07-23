@@ -17,7 +17,7 @@ Read `shared/reading-fullvision-data.md` and `shared/sparse-data.md` before call
 
 ## Steps
 
-1. **Precondition:** run `data-health`. On 🚩, abort — you cannot power a test on a metric
+1. **Precondition:** call `fullvision:check_data_health`. On red, abort — you cannot power a test on a metric
    you cannot measure.
 2. **Measure the page honestly.** `fullvision:query_view` on `view:page-performance` for
    sessions and `view:page-customers` for the conversion baseline. Use the page's own trailing
@@ -80,7 +80,7 @@ at each mde, never a hedge.
 
 ## Refuse when
 
-- `data-health` returns 🚩.
+- `fullvision:check_data_health` returns red.
 - The page has fewer than **500 sessions** in the trailing 90 days — there is not enough data
   to compute a baseline, let alone a test.
 - The proposed variant changes pricing, legal copy, or anything in

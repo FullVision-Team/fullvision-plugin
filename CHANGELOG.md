@@ -6,6 +6,17 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 ## [Unreleased]
 
 ### Added
+- **`google-ads-review` — one weekly Google Ads session, one command.** Merges the substance
+  of the old `cut-wasted-spend` and `verify-revenue-feedback-loop` skills: precondition on
+  `fullvision:check_data_health`, verify closed Stripe revenue is reaching Google as conversion
+  signal (upload failures, terminal-expired events, mid-funnel-goal recommendation below ~20
+  closed deals/month), then find zero-payer search terms/placements and budget/status outliers,
+  emit one consolidated change-list staged via `fullvision:google_propose_*`, and apply by id
+  on confirmation. One job = one skill.
+- **Two gateway tools that replace two skills** (shipped from `full_distrib`, not this repo):
+  `fullvision:check_data_health` → `{ verdict: "green"|"amber"|"red", checks: [...] }`, and
+  `fullvision:get_capabilities` → `{ connections, tools, hidden }`. Every skill now calls
+  `check_data_health` as its precondition instead of running a `data-health` skill.
 - `fv-onboard` — the install-time entry point, and the first skill that works from a standing
   start: no account, no key, nothing connected. Walks signup → workspace → API key → tracker
   → Stripe → server events → search/ads, verifying each step against live data rather than
@@ -19,6 +30,15 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   by `apply_proposal` + `revert_mutation`.
 
 ### Removed
+- **Four skills, replaced by tools or merged** — skill count 13 → 10. `data-health` and
+  `capabilities` become gateway tools (`fullvision:check_data_health`,
+  `fullvision:get_capabilities`): they were deterministic — a graded verdict and a capability
+  inventory — so they are facts a tool owns, not judgment a skill delivers. `cut-wasted-spend`
+  and `verify-revenue-feedback-loop` merge into the single `google-ads-review` session skill.
+  The merge **deliberately narrows the feedback-loop check to Google** — the old skill also
+  checked Meta and LinkedIn uploads, but those platforms are reads-only on the MCP surface for
+  now, so there is nothing to act on there; Meta's pLTV risk stays documented in
+  `shared/platforms/meta.md`.
 - **The bundled `google-ads` MCP server** (self-hosted `googleads/google-ads-mcp`) — the last
   vendor ad server in the plugin. Reads now go through `fullvision:google_ads_search`; the
   pipx/Python toolchain, gcloud ADC and `GOOGLE_ADS_DEVELOPER_TOKEN` are gone. Ad-platform
@@ -42,9 +62,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   a test asserts the old `export FULLVISION_API_KEY` path cannot come back.
 - `shared/platforms/google.md` documented Google as read-only-via-vendor-server. It is now
   first-party read+write via the FullVision gateway, connected through the app OAuth at
-  `https://app.fullvision.io/setup/data-sync/google-ads`. `fv-cut-wasted-spend` proposes
+  `https://app.fullvision.io/setup/data-sync/google-ads`. `google-ads-review` proposes
   negatives via `fullvision:google_propose_negative_keywords`, applied through the
-  `apply_proposal` gate. `fv-capabilities` reports Google Ads management as available and undoable.
+  `apply_proposal` gate. `fullvision:get_capabilities` reports Google Ads management as
+  available and undoable.
+- **New `CLAUDE.md`** captures the design principle behind this restructure: tools = facts,
+  skills = judgment. Deterministic checks/inventories/reads/staged-writes live in the gateway;
+  skills exist only where judgment, sequencing and human gates are needed — one job, one skill.
 
 ## [0.4.0] — 2026-07-22
 

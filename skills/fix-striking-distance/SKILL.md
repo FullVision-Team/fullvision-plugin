@@ -18,7 +18,7 @@ Read `shared/reading-fullvision-data.md` before calling anything.
 
 ## Steps
 
-1. **Precondition:** run `data-health`. On 🚩, abort.
+1. **Precondition:** call `fullvision:check_data_health`. On red, abort.
 2. **Pull the striking-distance set.** `fullvision:query_view` on
    `view:gsc-striking-candidates`. This view exists precisely for this job and nothing
    currently uses it.
@@ -68,7 +68,7 @@ title/meta.
 
 ## Refuse when
 
-- `data-health` returns 🚩.
+- `fullvision:check_data_health` returns red.
 - No `gsc_connection` exists for the workspace.
 - Fewer than 3 pages clear the thresholds — say the account is too small for this sweep.
 - The page's problem is conversion rather than CTR — route to `find-leaky-pages` instead of

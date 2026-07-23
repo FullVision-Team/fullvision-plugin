@@ -54,7 +54,7 @@ too-large change-list into two runs to slip under the cap.
 Every applied change appends to `.fullvision/changes/YYYY-MM-DD.md` in the working directory:
 
 ```markdown
-## 14:22 — cut-wasted-spend — meta-ads
+## 14:22 — google-ads-review — google-ads
 
 **Change:** added 12 negative keywords to ad group `AG-4471`
 **Why:** 12 search terms, €890 combined spend / 90d, 0 payers, ≥ 60 clicks each

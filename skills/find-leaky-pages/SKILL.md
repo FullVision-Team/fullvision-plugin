@@ -15,7 +15,7 @@ Read `shared/reading-fullvision-data.md` and `shared/sparse-data.md` before call
 
 ## Steps
 
-1. **Precondition:** run `data-health`. On 🚩, abort.
+1. **Precondition:** call `fullvision:check_data_health`. On red, abort.
 2. **Pull traffic and revenue per page.** `fullvision:query_view` on `view:page-performance`
    and `view:page-customers` for the trailing 90 days.
 3. **Compute lost revenue per page:**
@@ -58,6 +58,6 @@ lost revenue, the dominant friction signal, and paid/organic.
 
 ## Refuse when
 
-- `data-health` returns 🚩.
+- `fullvision:check_data_health` returns red.
 - Fewer than 3 pages clear the thresholds — report the account is too small for this sweep and
   point at `diagnose-page` (v2) for single-URL work.

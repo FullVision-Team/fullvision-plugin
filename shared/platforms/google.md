@@ -42,7 +42,7 @@ Nothing to install and no developer token to request.
 
 FullVision exports payment conversions with a flat pLTV value. Google's smart bidding
 optimises toward whatever it receives, so a broken export silently undoes every
-recommendation. `verify-revenue-feedback-loop` checks this.
+recommendation. `google-ads-review` checks this as its first act, before proposing anything.
 
 Below roughly **20–30 closed deals/month** Google's bidding cannot learn from payment events
 alone — recommend a mid-funnel goal with an assigned proxy value instead.

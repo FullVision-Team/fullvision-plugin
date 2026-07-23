@@ -20,7 +20,7 @@ Read `shared/reading-fullvision-data.md`, `shared/safety-rails.md` and
 - **`webflow`** — the site is a Webflow project. Use the `webflow` MCP server for CMS and page
   writes.
 
-`capabilities` detects which is available. If both are, **ask once** and record the answer in
+`fullvision:get_capabilities` reports which is available. If both are, **ask once** and record the answer in
 `.fullvision/config.json` (`{"site_write_target": "github"}`) so later runs do not re-ask.
 If neither is available, run read-only per `shared/safety-rails.md` §9 and emit the change-list
 as a diff or a copy-pasteable content block.
@@ -63,7 +63,7 @@ server at all, so Webflow being absent must not make this skill unavailable.
 
 ## Refuse when
 
-- `data-health` returns 🚩 — you would be fixing a page based on incomplete behaviour data.
+- `fullvision:check_data_health` returns red — you would be fixing a page based on incomplete behaviour data.
 - The page has fewer than **500 sessions** in the trailing 90 days. There is no evidence to
   act on; say so.
 - The requested change is outside the scope limits above.

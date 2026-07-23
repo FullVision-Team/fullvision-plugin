@@ -16,7 +16,7 @@ Read `shared/reading-fullvision-data.md` before calling anything.
 
 ## Steps
 
-1. **Precondition:** run `data-health`. On 🚩, abort — query→revenue linkage runs through
+1. **Precondition:** call `fullvision:check_data_health`. On red, abort — query→revenue linkage runs through
    the same identity graph.
 2. **Pull the demand surface.** `fullvision:query_view` on `view:gsc-content-gap-candidates`
    for queries the site surfaces for without dedicated content, and
@@ -63,7 +63,7 @@ attributed revenue, bucket, and the recommended next step.
 
 ## Refuse when
 
-- `data-health` returns 🚩.
+- `fullvision:check_data_health` returns red.
 - No `gsc_connection` exists for the workspace — this skill has no input without Search
   Console; say so and point at connecting it.
 - Fewer than 10 queries clear the impression threshold. The site is too young for a sweep;

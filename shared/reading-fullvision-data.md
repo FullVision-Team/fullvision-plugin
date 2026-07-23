@@ -64,4 +64,4 @@ is expected, not a bug.
 **Identity coverage caps every number.** If `health-identity-recon` or
 `health-checkout-coverage` is degraded, revenue is under-attributed at the source and every
 downstream ROAS is biased low. Report the coverage figure alongside the recommendation, or
-refuse. See `data-health`.
+refuse. Call `fullvision:check_data_health` for the graded verdict.

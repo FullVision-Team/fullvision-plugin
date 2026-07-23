@@ -4,20 +4,17 @@ const skills = loadSkills();
 const writeSkills = skills.filter((s) => s.frontmatter.writes.length > 0);
 
 describe("degradation contract", () => {
-  it("ships the thirteen v0.3 skills", () => {
+  it("ships the ten v0.5 skills", () => {
     expect(skills.map((s) => s.dir).sort()).toEqual([
       "build-audience",
-      "capabilities",
-      "cut-wasted-spend",
-      "data-health",
       "design-page-test",
       "find-keyword-gaps",
       "find-leaky-pages",
       "fix-page",
       "fix-striking-distance",
+      "google-ads-review",
       "login",
       "onboard",
-      "verify-revenue-feedback-loop",
       "win-back-churned",
     ]);
   });
@@ -55,9 +52,4 @@ describe("degradation contract", () => {
     },
   );
 
-  it("capabilities explains the degradation rule to the user", () => {
-    const caps = skills.find((s) => s.dir === "capabilities")!;
-    expect(caps.body).toMatch(/unavailable/i);
-    expect(caps.body).toMatch(/read-only/i);
-  });
 });
