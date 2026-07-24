@@ -16,9 +16,16 @@ Judge Google on a trailing 90-day window. A shorter window systematically unders
 Reads go through `fullvision:google_ads_search` — a GAQL passthrough capped at LIMIT 1000 by
 default (10000 max) and tenancy-scoped to the workspace's connected accounts — plus
 `fullvision:google_list_ad_accounts`. Writes go through `fullvision:google_propose_*` (campaign
-budget/status, ad text, negative keywords, tracking params) and `fullvision:google_check_ad_status`,
-applied only through the `apply_proposal` human gate and reversible with `revert_mutation`. No
-vendor server, no developer token, no Python toolchain.
+budget/status, ad text, negative keywords, tracking params, conversion goals, sitelinks,
+callouts, structured snippets) and `fullvision:google_check_ad_status`, applied only through
+the `apply_proposal` human gate and reversible with `revert_mutation`. No vendor server, no
+developer token, no Python toolchain.
+
+Ad-text edits cover everything that renders in the ad: headlines and descriptions accept plain
+strings (rotate freely) or `{ text, pin }` to pin a slot (`HEADLINE_1..3` / `DESCRIPTION_1..2`
+— pinning is opt-in and reduces Google's combinatorial testing, so pin only with a reason), and
+`path1`/`path2` set the display path shown after the domain (≤15 chars each, `path2` requires
+`path1`). Revert restores prior copy including pins and paths.
 
 ## Connection
 
@@ -89,9 +96,36 @@ server-side-imported "qualified lead"):
 
 Back out: propose `goal_config_level` CUSTOMER to resync the campaign with the account goals.
 
-**In scope now:** conversion-goal management (this section). **Still out of v1:** bidding
-strategies, targeting, creative, and create/delete of campaigns — irreversible or
-learning-resetting.
+**In scope now:** conversion-goal management (this section) and ad-surface assets (next
+section). **Still out of v1:** bidding strategies, targeting, and create/delete of campaigns —
+irreversible or learning-resetting.
+
+## Ad-surface assets (sitelinks, callouts, structured snippets)
+
+Sitelinks, callouts and structured snippets are **Assets** in Google's model — standalone
+objects linked to a level via `customer_asset` (account) or `campaign_asset` (campaign).
+Assets are immutable: an "edit" is create-new-asset + swap-link, which is exactly what the
+gateway does — in ONE atomic mutate, so the ad never serves a half-swapped set.
+
+Three tools, all **declarative replace**: the call states the desired FULL set at one level,
+and the gateway swaps out whatever is linked there now. Nothing applies until
+`apply_proposal`; revert restores the prior link set (the replaced assets are relinked — new
+assets stay in the account unlinked, which stops them serving; Google has no asset delete).
+
+- `fullvision:google_propose_sitelinks` — ≤10 items of `{ link_text ≤25, final_url,
+  description1/2 ≤35 }`.
+- `fullvision:google_propose_callouts` — ≤10 plain strings, each ≤25 chars.
+- `fullvision:google_propose_structured_snippets` — ≤5 sets of `{ header, values }`; headers
+  come from Google's fixed 13-item list (Amenities … Types), 3–10 values each, ≤25 chars.
+
+All three take `level: account|campaign` (`campaign` requires `campaign_id`; campaign-level
+links override account-level in serving). One full-set proposal per (tool, target) may be
+pending at a time — a second is rejected at propose until the first applies or expires.
+
+**Read the current set first** — declarative replace means anything you omit is removed. GAQL
+via `fullvision:google_ads_search`: `customer_asset` for account level (campaign_asset returns
+nothing for account links), `campaign_asset` for campaign level, joined to `asset` for the
+display fields.
 
 ## Customer Match
 

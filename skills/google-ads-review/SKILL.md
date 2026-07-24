@@ -79,10 +79,14 @@ upload loops are not checked or mutated here.
 
 7. **Emit ONE consolidated change-list, then STOP.** Stage each change through the matching
    propose tool — `fullvision:google_propose_negative_keywords`,
-   `fullvision:google_propose_campaign_budget`, `fullvision:google_propose_campaign_status`, and
+   `fullvision:google_propose_campaign_budget`, `fullvision:google_propose_campaign_status`,
    the conversion-goal tools from step 2 (`fullvision:google_propose_custom_conversion_goal`,
    `fullvision:google_propose_campaign_conversion_goals`,
-   `fullvision:google_propose_conversion_goal_settings`) — each returning a proposal id. Do not
+   `fullvision:google_propose_conversion_goal_settings`), and — only when the landing-page set
+   actually changed — the ad-surface asset tools (`fullvision:google_propose_sitelinks`,
+   `fullvision:google_propose_callouts`, `fullvision:google_propose_structured_snippets`;
+   declarative FULL-set replace, so read the current set via GAQL first and restate everything
+   that should stay) — each returning a proposal id. Do not
    apply in this turn. Ever. Two turns, always (`shared/safety-rails.md` §1). The upload-failure
    and terminal-expired findings from step 2 remain diagnosis, not a platform write — report
    them as recommendations the user applies in the Google UI / export settings; only the
