@@ -1,5 +1,14 @@
 # Handoff: finish the Evaboot final-URL repoint (2 ads left)
 
+> **RESOLVED 2026-07-24.** Ads `659706541844` + `696254536304` already point at
+> `/lp/download-sales-navigator-leads` (verified live via GAQL — the repoint was applied
+> before this handoff was picked up). `/export-leads-sales-navigator-to-csv` confirmed
+> gone from the surface. Full sweep: all 37 non-removed ads resolve to the root domain
+> or the six `/lp/` slugs, every URL returns 200 (cache-busted), all 6 account-level
+> sitelinks on `/lp/export-sales-navigator-to-excel` with anchors `#testimonials`,
+> `#demo`, `#data`, `#pricing` present in the served HTML, and 0 sitelinks on live
+> campaigns are broken. Only the post-unpause QS re-check below remains open.
+
 Account 456-010-5719 → `customer_id` `4560105719`. All 7 campaigns **PAUSED** — nothing serving, nothing at risk.
 
 Follows `handoff-google-ads-asset-write-tools.md`. The sitelink tool shipped and has been used in anger; this is the tail of that work.
