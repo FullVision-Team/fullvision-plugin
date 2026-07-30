@@ -19,8 +19,10 @@ platform conversions while Stripe revenue never lands is the most expensive kind
 
 Read `shared/reading-fullvision-data.md`, `shared/safety-rails.md`, `shared/sparse-data.md`
 and `shared/platforms/google.md` before calling anything. All are binding — they hold the
-attribution window (90-day click age), the propose→confirm→apply protocol, the sparse-data
-minimum-n discipline, and Google's GAQL querying rules. Do not restate them here; follow them.
+attribution split (FullVision's unbounded person-stitched first touch is what we judge on;
+Google's 90-day click age is only a limit on what can be uploaded back), the
+propose→confirm→apply protocol, the sparse-data minimum-n discipline, and Google's GAQL
+querying rules. Do not restate them here; follow them.
 
 Google-scoped only. Meta and LinkedIn are reads-only on the MCP surface for now, so their
 upload loops are not checked or mutated here.
@@ -68,16 +70,52 @@ upload loops are not checked or mutated here.
      `fullvision:google_propose_conversion_goal_settings` for the account defaults — staged in
      the same change-list.
 
-3. **Establish the measurable window.** `fullvision:query_view` on `view:ads-measurement-start`.
-   Everything before that date is unmeasurable, not wasteful. All spend figures below are
-   within the measurable window only.
+3. **Establish the judging window — measurement start to maturity line.** The left edge is
+   `fullvision:query_view` on `view:ads-measurement-start`. Everything before that date is
+   unmeasurable, not wasteful. All spend figures below are within the measurable window only.
+   FullVision attribution is unbounded (`shared/platforms/google.md`), so there is no trailing
+   lookback — the window runs from the measurement start forward.
+   - **The right edge is a maturity line**, because a click needs time to become a charge before
+     "0 payers" is admissible evidence. Derive it with `fullvision:run_sql_query`: across
+     ad-sourced payers, measure the lag in days between the payer's **first ad-attributed click**
+     and their **first Stripe charge**, and take the **p80** of that distribution. Maturity line
+     = today minus that p80. Spend after the maturity line has not had time to produce a charge,
+     so its zero-payer terms are held back, listed under "Too young to judge" — never proposed.
+   - **Declare the query, do not re-invent it** (`shared/safety-rails.md` §3). Population:
+     payers whose first touch is an ad click. Quantity: days from first ad-attributed click to
+     first Stripe charge, one row per payer. Aggregate: the p80 of that quantity, computed in
+     SQL — never fetch the rows and take a percentile client-side. The SQL must carry the literal
+     `$USER_ID` placeholder in a `WHERE` clause. Resolve the actual table and column names at run
+     time via `list_tables` → `get_table_schema` (`shared/reading-fullvision-data.md` §3); this
+     file names no schema, because a stale table name here would be worse than none.
+   - **Fallback:** while fewer than **8** ad-sourced payers exist to fit a percentile, use
+     **60 days** and state in the report that the maturity line is a fallback and why.
+   - **Google-side consequence, reported as a finding.** A payer whose first ad click is older
+     than Google's 90-day click age is fully attributed in FullVision but can never be uploaded
+     to Google. Count those payers and report the count: it means Google's bidding is
+     structurally blind to the longest-cycle buyers. It is a finding, not a window to judge by.
 
-4. **Review wasted spend.** `fullvision:query_view` on `view:keyword-performance` for the
-   trailing 90 days, and `view:ads-leaderboard` for account context (use the `clipped_*`
-   columns). Aggregate in SQL, never client-side. Apply the thresholds below to produce a
-   negative-keyword candidate list. For placements or anything the views do not cover, use
-   `fullvision:google_ads_search` (GAQL — one resource per query, `segments.date` in WHERE,
-   metrics in micros).
+   ```
+   debt: skill-side p80 lag query, ceiling = plugin ships to a second workspace,
+   upgrade trigger = promote to a gateway view so the fact lives in a tool not markdown
+   ```
+
+4. **Review wasted spend.** Negatives are built from **search terms** — what people actually
+   typed — never from keywords.
+   - **Search terms come from GAQL `search_term_view` via `fullvision:google_ads_search`, and
+     nowhere else.** No FullVision view carries them. The `keyword-performance` view is the
+     **organic-search (Google Search Console)** counterpart and must never be used for paid
+     negatives — mining organic queries and proposing them as paid negatives is the mistake this
+     line exists to prevent.
+   - **Paid keyword grain for context:** `view:ads-leaderboard` at `?level=keyword`, using the
+     `clipped_*` columns. Account context comes from the same view at its campaign grain.
+   - Placements and anything else the views do not cover: `fullvision:google_ads_search` on its
+     own resource.
+   - GAQL rules hold throughout — one resource per query, `segments.date` in `WHERE`, metrics in
+     micros. Aggregate in SQL, never client-side.
+
+   Apply the thresholds below, over the judging window from step 3, to produce a
+   negative-keyword candidate list.
 
 5. **Corroborate.** Per `shared/sparse-data.md` §4, zero payers alone is not enough at low
    volume. Require a second signal per candidate: no assisted conversions in any attribution
@@ -111,10 +149,12 @@ upload loops are not checked or mutated here.
 ## Thresholds — fixed, never runtime-adjusted
 
 Negative-keyword candidates:
-- Term spend ≥ **€150** over the trailing 90 days (within the measurable window)
+- Term spend ≥ **€150** over the judging window
 - Term clicks ≥ **60** — below this, zero payers is expected even for a good term
 - Payers attributed = **0**
-- Window = trailing **90 days**, matching Google's click-age window
+- Window = `view:ads-measurement-start` → the maturity line (p80 click-to-charge lag, or the
+  **60-day** fallback below **8** ad-sourced payers). Never a trailing window borrowed from
+  Google's upload rules.
 - Confidence stated at **85%**
 
 Feedback loop:
@@ -156,8 +196,16 @@ Per `shared/safety-rails.md` §9 this is a normal outcome, not a failure.
 ## Output
 
 `shared/report-format.md`. Header carries the `check_data_health` verdict and the per-loop
-feedback health (one line). Each proposed negative keyword line carries: term, spend, clicks,
-payers, attributed revenue, ad group, and the corroborating signal.
+feedback health (one line), plus two lines beyond that shape:
+
+- the **ads-scoped gclid coverage** figure from step 1 (or the fact that it was absent);
+- the **maturity date this run judged to**, marked `derived-p80` or `fallback`.
+
+Both are header material because a reader must see what window produced the numbers without
+reading the body — a change-list whose window is invisible cannot be audited later.
+
+Each proposed negative keyword line carries: term, spend, clicks, payers, attributed revenue,
+ad group, and the corroborating signal.
 
 ## Refuse when
 
