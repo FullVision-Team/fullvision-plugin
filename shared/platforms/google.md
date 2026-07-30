@@ -3,13 +3,22 @@
 Reference material, not a skill and not an agent. Every skill that touches Google reads this.
 Platform difference is an *input* to a skill, not a separate specialist.
 
-## Attribution window
+## Attribution window — Google's upload limit is not FullVision's window
 
-**90-day click age.** A charge counts if it lands within 90 days of the click. This is actual
-realised revenue, not a prediction — which makes Google the most trustworthy of the three
-platforms and the one whose numbers are directly comparable to Stripe.
+**Google's 90-day click age is a limit on what Google can receive and count.** A conversion
+upload is accepted only when the charge lands within 90 days of the click; an older click
+cannot be uploaded at all. What Google does count is actual realised revenue, not a prediction
+— which makes its own numbers the most trustworthy of the three platforms and the only ones
+directly comparable to Stripe.
 
-Judge Google on a trailing 90-day window. A shorter window systematically understates it.
+**FullVision's attribution is person-stitched first-touch and unbounded.** No time limit: a
+payer is credited to the click that started them whether that click was 12 days or 12 months
+ago. Every judgement — campaign, keyword, search term — uses this, never a trailing window
+borrowed from Google's upload rules.
+
+**The consequence.** A payer whose first ad click is older than 90 days is fully attributed in
+FullVision but can never be uploaded to Google, so Google's bidding is structurally blind to
+the longest-cycle buyers. That is a finding worth reporting, not a window to judge by.
 
 ## Read + write capability — first-party, via the FullVision gateway
 
