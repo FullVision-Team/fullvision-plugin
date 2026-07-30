@@ -27,10 +27,21 @@ upload loops are not checked or mutated here.
 
 ## Steps
 
-1. **Precondition.** Call `fullvision:check_data_health`. On `red`, abort — return the failing
-   checks and "fix tracking first"; upload figures and payer counts are unreadable when
-   identity coverage is broken. On `amber`, continue but state the biased checks in the report
-   and raise every minimum-n threshold below by 50%.
+1. **Health context, then the ads-scoped gate.** Call `fullvision:check_data_health` and carry
+   its verdict in the report header **as context, never as a stop** — all three checks are
+   workspace-global and none is ads-scoped, so a global verdict cannot gate a run that never
+   reads that data (`shared/safety-rails.md` §10). Gate instead on the coverage this run's own
+   evidence rests on: gclid observability, `obs_gclid_clicks / g_clicks` taken from the
+   `landing_pages` array of the `fullvision:ad-report` response. `obs_gclid_clicks` is **not a
+   declared metric** of `view:ad-landing-pages` — read it from the payload, not the view, and
+   never query the view for it.
+   - Floor: **70%**. Fixed, changeable only by editing this file, never at runtime.
+   - At or above the floor ⇒ run the full path.
+   - Below the floor, **or the field absent from the payload** ⇒ withhold every performance
+     negative-keyword proposal and say so with the figure (or with the fact that it is missing).
+     Unknown coverage is not good coverage. Unobserved gclids only lose payers, never invent
+     them, so thin coverage turns "zero payers" into a false negative — the wrong basis for a
+     destructive write. Diagnostics and reporting run in full either way.
 
 2. **Feedback-loop check — is closed Stripe revenue reaching Google?** Ad platforms optimise
    toward whatever signal they receive; a broken export silently undoes every recommendation
@@ -111,6 +122,10 @@ Feedback loop:
 - Any terminal-`expired` rows ⇒ flag
 - Closed deals/month < **20** ⇒ recommend a mid-funnel goal
 
+Ads-scoped coverage:
+- gclid coverage floor **70%** (`obs_gclid_clicks / g_clicks`, from the `fullvision:ad-report`
+  payload) — below it, or with the field absent, performance negative keywords are withheld
+
 ## Blast radius
 
 - Max **25 negative keywords** per run (overrides the default 10-entity cap — a negative
@@ -121,11 +136,22 @@ Feedback loop:
 
 ## Read-only degradation
 
-If the workspace's Google Ads connection is spend-sync only (no mutate scope), the propose
-tools are unavailable and the skill runs read-only per `shared/safety-rails.md` §9: run the
-**entire** analysis and emit the change-list as an artifact — copy-pasteable negative keywords
-grouped by ad group, plus the exact Ads UI path per change. This is a normal outcome, not a
-failure.
+The run calls `fullvision:get_capabilities` first and branches on the `google_ads` connection's
+`ready` flag. Never assume the Google tools exist and never discover their absence by calling
+one and reading the error.
+
+- **`ready: true`** — the full path runs, and every numbered change-list line is a staged
+  proposal id.
+- **`ready: false`** — this is a **read-only run**: everything reachable from FullVision's own
+  views still runs, and the change-list is emitted as a copy-pasteable artifact — negative
+  keywords grouped by ad group, the exact Ads UI path per change, and no applyable ids.
+
+`fullvision:google_ads_search` sits on that same surface, so on a read-only run every
+GAQL-sourced diagnostic — search terms, conversion-goal sanity, final-URL / AI-Max drift — is
+**skipped, not faked**: the report names each skipped diagnostic rather than silently shortening
+the list.
+
+Per `shared/safety-rails.md` §9 this is a normal outcome, not a failure.
 
 ## Output
 
