@@ -17,8 +17,15 @@ Read `shared/reading-fullvision-data.md` and `shared/sparse-data.md` before call
 
 ## Steps
 
-1. **Precondition:** call `fullvision:check_data_health`. On red, abort — you cannot power a test on a metric
-   you cannot measure.
+1. **Health context, never a gate.** Call `fullvision:check_data_health` and carry its verdict
+   in the report header **as context** (`shared/safety-rails.md` §10). This skill writes
+   nothing, so a workspace-global verdict cannot gate it — never abort on one. Note the
+   direction, because it runs the safe way here: session counts are unaffected, and a
+   `view:page-customers` baseline `p` depressed by missing identity **inflates** `n_per_arm` in
+   step 3, which grows as `p` shrinks. A degraded `health-identity-recon` or
+   `health-checkout-coverage` therefore makes the spec demand *more* sample and *longer*
+   duration than the truth requires, and pushes step 4 toward "do not test" — a bias to report,
+   never a reason to refuse to design the test.
 2. **Measure the page honestly.** `fullvision:query_view` on `view:page-performance` for
    sessions and `view:page-customers` for the conversion baseline. Use the page's own trailing
    90-day numbers. Do not use the account average as a stand-in for a specific page.
@@ -80,7 +87,6 @@ at each mde, never a hedge.
 
 ## Refuse when
 
-- `fullvision:check_data_health` returns red.
 - The page has fewer than **500 sessions** in the trailing 90 days — there is not enough data
   to compute a baseline, let alone a test.
 - The proposed variant changes pricing, legal copy, or anything in

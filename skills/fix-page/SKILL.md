@@ -63,7 +63,11 @@ server at all, so Webflow being absent must not make this skill unavailable.
 
 ## Refuse when
 
-- `fullvision:check_data_health` returns red — you would be fixing a page based on incomplete behaviour data.
+- `fullvision:check_data_health` reports **`health-event-coverage`** degraded — this skill's
+  evidence is client-side behaviour (scroll depth, rageclicks, form performance), so thin event
+  coverage means fixing a page on incomplete behaviour data. Report the global verdict as context
+  per `shared/safety-rails.md` §10, but gate on this check alone: `health-identity-recon` and
+  `health-checkout-coverage` do not block a run that is not fixing a page on payer counts.
 - The page has fewer than **500 sessions** in the trailing 90 days. There is no evidence to
   act on; say so.
 - The requested change is outside the scope limits above.
