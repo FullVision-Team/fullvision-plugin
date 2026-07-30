@@ -52,7 +52,7 @@ export async function fetchSurface(): Promise<{ tools: string[]; views: string[]
 
 /** Every `fullvision:<tool>` and `view:<name>` reference in a skill body. */
 export function extractReferences(body: string): { tools: string[]; views: string[] } {
-  const tools = [...body.matchAll(/`fullvision:([a-z_]+)`/g)].map((m) => m[1]);
+  const tools = [...body.matchAll(/`fullvision:([a-z0-9_-]+)`/g)].map((m) => m[1]);
   const views = [...body.matchAll(/`view:([a-z0-9-]+)`/g)].map((m) => m[1]);
   return { tools: [...new Set(tools)], views: [...new Set(views)] };
 }
