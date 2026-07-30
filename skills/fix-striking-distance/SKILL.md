@@ -49,8 +49,7 @@ Read `shared/reading-fullvision-data.md` before calling anything.
    rewrite that cannot fix it.
 6. **Write the proposed title and meta description** for each page, with the current one
    alongside for comparison, then **hand off to `fix-page`** with the URL and the exact
-   proposed strings. That skill applies it as a GitHub PR or a Webflow write under the
-   two-turn rule.
+   proposed strings. That skill applies it as a GitHub PR under the two-turn rule.
 
 ## Thresholds — fixed
 

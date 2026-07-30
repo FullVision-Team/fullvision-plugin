@@ -1,7 +1,7 @@
-import { loadSkills, isAnalysisSkill } from "./lib/skills";
+import { loadSkills, isAnalysisSkill, isWriteSkill } from "./lib/skills";
 
 const skills = loadSkills();
-const writeSkills = skills.filter((s) => s.frontmatter.writes.length > 0);
+const writeSkills = skills.filter(isWriteSkill);
 
 describe("safety rails", () => {
   it.each(skills.map((s) => [s.dir, s] as const))(

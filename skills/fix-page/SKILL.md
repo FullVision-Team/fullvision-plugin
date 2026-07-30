@@ -1,32 +1,28 @@
 ---
 name: fix-page
-description: Apply a landing-page fix — a GitHub pull request against the site repo, or a Webflow CMS/page write. Takes a diagnosis from find-leaky-pages and turns it into a reviewable change.
+description: Apply a landing-page fix as a GitHub pull request against the site repo. Takes a diagnosis from find-leaky-pages and turns it into a reviewable change.
 cadence: on-demand
 requires: [fullvision]
-writes: [webflow]
+writes: []
 ---
 
 # fix-page
 
-The only skill in v1 that changes the website. Two write targets, user-selectable.
+The only skill in v1 that changes the website. One write path: a pull request against the
+repo that serves the site.
 
 Read `shared/reading-fullvision-data.md`, `shared/safety-rails.md` and
 `shared/sparse-data.md` before calling anything. All three are binding.
 
-## Choosing the write target
+## The write path
 
-- **`github`** — the site lives in a repo the user has checked out. Edit files, open a **pull
-  request**. Never commit to the default branch. Uses the local `git`/`gh` CLI, no MCP server.
-- **`webflow`** — the site is a Webflow project. Use the `webflow` MCP server for CMS and page
-  writes.
+The site lives in a repo the user has checked out. Edit files, open a **pull request**. Never
+commit to the default branch. This uses the local `git`/`gh` CLI and no MCP server at all,
+which is why `writes` is empty — no write server being connected can make this skill
+unavailable.
 
-`fullvision:get_capabilities` reports which is available. If both are, **ask once** and record the answer in
-`.fullvision/config.json` (`{"site_write_target": "github"}`) so later runs do not re-ask.
-If neither is available, run read-only per `shared/safety-rails.md` §9 and emit the change-list
-as a diff or a copy-pasteable content block.
-
-Note: `webflow` is declared in `writes` but not in `requires` — the GitHub path needs no MCP
-server at all, so Webflow being absent must not make this skill unavailable.
+If the site repo is not available, run read-only per `shared/safety-rails.md` §9 and emit the
+change-list as a diff or a copy-pasteable content block.
 
 ## Steps
 
@@ -39,12 +35,9 @@ server at all, so Webflow being absent must not make this skill unavailable.
 3. **Propose the change with its evidence, then STOP.** Two turns, always
    (`shared/safety-rails.md` §1). Include what the change is expected to move and by how much.
 4. **On confirmation, write the change log entry first**
-   (`.fullvision/changes/YYYY-MM-DD.md`), then apply:
-   - **GitHub:** branch `fv-fix/<slug>`, make the edit, open a PR whose body is the hypothesis
-     plus the evidence. Never merge it — the PR *is* the review gate.
-   - **Webflow:** write via the `webflow` MCP server. Because a Webflow write is live
-     immediately, record the exact previous value in the change log **before** writing so the
-     revert instruction is concrete.
+   (`.fullvision/changes/YYYY-MM-DD.md`), then apply: branch `fv-fix/<slug>`, make the edit,
+   open a PR whose body is the hypothesis plus the evidence. Never merge it — the PR *is* the
+   review gate.
 5. **State how to measure it.** Name the view and the metric to re-check, and when.
 
 ## Scope limits — fixed
@@ -59,7 +52,7 @@ server at all, so Webflow being absent must not make this skill unavailable.
 
 ## Output
 
-`shared/report-format.md`, plus the PR URL or the Webflow item id.
+`shared/report-format.md`, plus the PR URL.
 
 ## Refuse when
 

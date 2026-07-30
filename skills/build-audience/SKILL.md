@@ -62,7 +62,7 @@ Therefore:
 
 ### 4. Destination
 
-Google Customer Match / Meta Custom Audience / LinkedIn Matched Audience / Brevo. Pick based
+Google Customer Match / Meta Custom Audience / LinkedIn Matched Audience. Pick based
 on floor clearance and consent state, and state which you picked and why. Per-platform floors,
 match rates and consent rules are in `shared/platforms/{google,meta,linkedin}.md`.
 

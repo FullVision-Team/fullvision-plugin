@@ -1,9 +1,9 @@
 ---
 name: win-back-churned
-description: Identify churned customers worth winning back, segmented by why they left and what they were worth, and stage a Brevo list plus a campaign brief. Emails real people, so every gate here is hard.
+description: Identify churned customers worth winning back, segmented by why they left and what they were worth, and emit the segments plus a campaign brief as an artifact you activate in whatever ESP you use. Emails real people, so every gate here is hard.
 cadence: monthly
-requires: [fullvision, brevo]
-writes: [brevo]
+requires: [fullvision]
+writes: []
 ---
 
 # win-back-churned
@@ -13,7 +13,8 @@ easiest to destroy permanently: a badly targeted win-back mail to someone who le
 an unsubscribe and a spam complaint, and spam complaints are priced per domain, not per
 campaign.
 
-This skill sends nothing. It stages a list and writes a brief. A human presses send.
+This skill sends nothing, and it writes nothing anywhere. It produces segments and a brief. A
+human loads them into their own ESP and presses send.
 
 Read `shared/reading-fullvision-data.md`, `shared/safety-rails.md` and
 `shared/sparse-data.md` before calling anything. All three are binding.
@@ -48,17 +49,21 @@ Read `shared/reading-fullvision-data.md`, `shared/safety-rails.md` and
 
 5. **Check consent and suppression before proposing anything.** Per `shared/safety-rails.md`
    and the consent discipline in `build-audience`: a lapsed customer is **not** an
-   automatic legitimate-interest recipient. Require a live marketing-consent flag, and
-   exclude anyone already unsubscribed, bounced, or complaint-flagged in Brevo. If the consent
-   field does not exist in the data, that is a refusal, not a caveat.
+   automatic legitimate-interest recipient. Require a live marketing-consent flag. Suppression
+   does not become optional just because this skill no longer talks to an ESP: the user **must**
+   apply their own ESP's suppression list — unsubscribes, bounces and complaint-flags — to
+   these segments before sending, and the artifact **must state that instruction explicitly**.
+   If the consent field does not exist in the data, that is a refusal, not a caveat.
 6. **Emit the change-list and STOP.** Two turns, always (`shared/safety-rails.md` §1). The
    change-list is: segment definitions, per-segment counts, the recoverable revenue estimate
-   with its n, the proposed Brevo list name, and a campaign brief per segment (angle, the
+   with its n, a proposed segment/list name, and a campaign brief per segment (angle, the
    specific reason to return, and what NOT to say).
-7. **On confirmation:** write the change log entry first, then create the Brevo list and add
-   contacts. **Creating a list is the entire write.** Do not create, schedule or send a
-   campaign from here under any circumstance — a human reviews the copy and presses send in
-   Brevo.
+7. **On confirmation: hand over the final artifact, then stop.** There is no API write left to
+   perform. Write the change log entry, then deliver the artifact — the segments and their
+   contacts, the per-segment brief, and the step-5 suppression instruction. **The artifact is
+   the entire output; nothing is written anywhere.** Do not create, schedule or send a campaign
+   from here under any circumstance — a human reviews the copy and presses send in their own
+   ESP.
 
 ## Thresholds — fixed, never runtime-adjusted
 
@@ -71,7 +76,7 @@ Read `shared/reading-fullvision-data.md`, `shared/safety-rails.md` and
 
 ## Blast radius
 
-- Max **1 list staged per run**, max **2,000 contacts**.
+- Max **1 segment list per run**, max **2,000 contacts**.
 - Max **1 run per account per 30 days.** Re-mailing the same lapsed population monthly is how
   a sending domain dies.
 - **Never** stage a contact who appears in a win-back list from the previous 180 days. Check
@@ -79,12 +84,13 @@ Read `shared/reading-fullvision-data.md`, `shared/safety-rails.md` and
 - Send, schedule and campaign creation are **out of scope in every mode** — not a blast-radius
   cap, a hard boundary.
 
-## Read-only mode
+## Read-only by construction
 
-If `brevo` is not connected, run the entire analysis and emit the change-list as an artifact:
-segment definitions, counts, the recoverable-revenue estimate, and a CSV-shaped contact list
-with the campaign brief. This is a normal outcome per `shared/safety-rails.md` §9, not a
-failure.
+This skill has no send destination and performs no API write, so every run is read-only. It
+runs the entire analysis and emits the change-list as an artifact: segment definitions, counts,
+the recoverable-revenue estimate, a CSV-shaped contact list, the campaign brief, and the
+suppression instruction from step 5. This is the normal outcome per `shared/safety-rails.md`
+§9, not a degraded one — activation happens by hand in whatever ESP the user runs.
 
 ## Output
 
