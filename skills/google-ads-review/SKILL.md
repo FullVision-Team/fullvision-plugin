@@ -29,6 +29,20 @@ upload loops are not checked or mutated here.
 
 ## Steps
 
+**Phase first — computed, never chosen.** Count the search terms clearing the step-4 thresholds
+over the judging window, and read the branch straight off that count. It is a volume fact, not a
+judgement call: no run may argue itself into the other branch, and neither branch is a failure.
+
+```
+launch phase  ⇔  qualifying terms < 5
+mature phase  ⇔  otherwise
+```
+
+Steps 1-4 are identical in both branches — the count cannot exist before step 4 produces it.
+**Steps 5-7 run in full only in mature phase.** In launch phase, steps 5 and 6 are replaced by
+`## Launch phase` below and step 7 emits only what that section allows — strictly less than the
+mature path, never nothing. Step 8 is unchanged: confirmation still gates every apply.
+
 1. **Health context, then the ads-scoped gate.** Call `fullvision:check_data_health` and carry
    its verdict in the report header **as context, never as a stop** — all three checks are
    workspace-global and none is ads-scoped, so a global verdict cannot gate a run that never
@@ -146,6 +160,47 @@ upload loops are not checked or mutated here.
    that `fullvision:revert_mutation` reverses a single change and `fullvision:revert_run`
    reverses the whole batch.
 
+## Launch phase
+
+Fewer than **5** qualifying terms means the mature path's statistics cannot carry a destructive
+write — which is a reason to do less, not a reason to go silent. A relaunched or young account is
+exactly when the plumbing breaks and nobody is watching, so this branch keeps every diagnostic and
+drops every judgement that needs volume.
+
+1. **Health.** Carry the ads-scoped coverage figure from step 1 in the header as context. It never
+   aborts a launch-phase run — nothing proposed here rests on a payer count.
+
+2. **Plumbing diagnostics, all read-only.** These are the failures that cost the most, show up
+   earliest, and are invisible to the platform's own reporting:
+   - **gclid landing** — `obs_gclid_clicks` vs `g_clicks` from the `fullvision:ad-report` payload.
+     A gap means clicks arrive without their id, and no later analysis recovers them.
+   - **Upload ledger** — Stripe upload success rate and terminal-`expired` rows, per step 2.
+   - **Conversion-goal sanity** — the four goal resources per `shared/platforms/google.md`.
+   - **Quality Score and `worst_landing_page_experience`** per ad landing page, via GAQL.
+   - **Final-URL / AI Max drift** — where the ads actually send traffic versus where they should.
+
+3. **Irrelevance negatives only**, from GAQL `search_term_view`. Judged on **meaning rather than
+   volume**: a term for an unrelated product is wrong on click 1, not on click 60. Declare this in
+   the report as a **non-statistical** criterion — it is independent of n, and must never be shown
+   as, or confused with, the €150 / 60-click performance thresholds. **Performance negatives do
+   not fire in launch phase**, and the report says so in those words rather than leaving their
+   absence to be inferred. List every term verbatim with its spend and clicks so a human can
+   overrule any single line without re-running the analysis. Cap: **25** per run.
+
+4. **Journey diagnosis.** Run a `fullvision:journeys` cohort on `first_touch_channel:
+   "Paid Search"` over the judging window, answering the question a payer count cannot answer at
+   this volume: where do ad clickers stop? Minimum **20** ad-sourced people — below that, report
+   the count and stop. Output is a **drop-off shape, never a per-person story — journey rows are
+   PII** (`shared/safety-rails.md`).
+
+5. **Budget, bidding and campaign status are hard-zero.** Not reduced, not caveated, not
+   "proposed for review": zero budget changes, zero bidding changes (out of v1 everywhere, and
+   doubly so here), zero pauses, zero enables. Below 5 qualifying terms there is no evidence that
+   could justify moving spend, and pausing a launching campaign destroys the learning period that
+   would have produced the evidence.
+
+Step 7's rule is otherwise unchanged — one consolidated change-list, propose only, then STOP.
+
 ## Thresholds — fixed, never runtime-adjusted
 
 Negative-keyword candidates:
@@ -166,13 +221,20 @@ Ads-scoped coverage:
 - gclid coverage floor **70%** (`obs_gclid_clicks / g_clicks`, from the `fullvision:ad-report`
   payload) — below it, or with the field absent, performance negative keywords are withheld
 
+Launch phase:
+- Phase boundary: fewer than **5** qualifying terms ⇒ launch phase, otherwise mature phase
+- Max **25** irrelevance negatives per run
+- Journey diagnosis minimum **20** ad-sourced people — below it, report the count and stop
+
 ## Blast radius
 
 - Max **25 negative keywords** per run (overrides the default 10-entity cap — a negative
   keyword is the most reversible action available).
 - Max **3 budget/status changes** per run.
 - Max **15%** of trailing-30d spend affected.
-- One run per account per day (`shared/safety-rails.md` §6).
+- **Launch phase:** max **25** irrelevance negatives, **zero** budget, bidding and
+  campaign-status changes.
+- One run per account per day (`shared/safety-rails.md` §6), both phases.
 
 ## Read-only degradation
 
@@ -191,26 +253,35 @@ GAQL-sourced diagnostic — search terms, conversion-goal sanity, final-URL / AI
 **skipped, not faked**: the report names each skipped diagnostic rather than silently shortening
 the list.
 
+Search terms are one of those skips, so a read-only run cannot count qualifying terms and
+therefore **cannot derive a phase**. Report the phase as undetermined and say why — never guess a
+branch. Nothing is applyable in this mode anyway, so no destructive write turns on the guess.
+
 Per `shared/safety-rails.md` §9 this is a normal outcome, not a failure.
 
 ## Output
 
 `shared/report-format.md`. Header carries the `check_data_health` verdict and the per-loop
-feedback health (one line), plus two lines beyond that shape:
+feedback health (one line), plus three lines beyond that shape:
 
 - the **ads-scoped gclid coverage** figure from step 1 (or the fact that it was absent);
-- the **maturity date this run judged to**, marked `derived-p80` or `fallback`.
+- the **maturity date this run judged to**, marked `derived-p80` or `fallback`;
+- the **phase**, `launch` or `mature`, with the qualifying-term count it was derived from.
 
-Both are header material because a reader must see what window produced the numbers without
-reading the body — a change-list whose window is invisible cannot be audited later.
+All three are header material because a reader must see what window and which branch produced the
+numbers without reading the body — a change-list whose window and phase are invisible cannot be
+audited later.
 
 Each proposed negative keyword line carries: term, spend, clicks, payers, attributed revenue,
 ad group, and the corroborating signal.
 
 ## Refuse when
 
-- `fullvision:check_data_health` returns `red`.
-- The measurable window is shorter than 90 days — say how long it is and re-run later.
 - Fewer than 30 days of upload-ledger history exist — the loop has not run long enough to judge.
-- Fewer than **5** terms clear the thresholds — at that point this is manual work, not a
-  sweep, and the report should say so rather than propose a token list.
+- The ads-scoped coverage figure of step 1 **cannot be computed at all** — the
+  `fullvision:ad-report` call fails, or returns no `landing_pages` to read it from — **and** a
+  destructive proposal would otherwise be staged. Report the gap and stop; proposing a negative
+  keyword against evidence whose coverage is unknowable is proposing blind. Diagnostics and
+  reporting still run.
+
+A thin account is not a refusal — it is `## Launch phase`.

@@ -94,3 +94,44 @@ it("puts the coverage figure and the maturity date in the report header", () => 
   expect(output).toMatch(/coverage/i);
   expect(output).toMatch(/maturity/i);
 });
+
+describe("google-ads-review: launch phase", () => {
+  it("declares the phase boundary as a volume fact", () => {
+    expect(skill.body).toMatch(/launch phase/i);
+    expect(skill.body).toMatch(/qualifying terms/i);
+  });
+
+  it("no longer refuses on a short measurable window", () => {
+    expect(skill.body).not.toMatch(/measurable window is shorter than/i);
+  });
+
+  it("no longer refuses when fewer than five terms qualify", () => {
+    const refusals = skill.body.split("## Refuse when")[1] ?? "";
+    expect(refusals).not.toMatch(/fewer than \*{0,2}5\*{0,2} terms/i);
+  });
+
+  it("still declares at least one refusal", () => {
+    const refusals = skill.body.split("## Refuse when")[1] ?? "";
+    expect(refusals.split("\n").filter((l) => l.trim().startsWith("-")).length)
+      .toBeGreaterThan(0);
+  });
+
+  it("allows irrelevance negatives on a non-statistical criterion", () => {
+    expect(skill.body).toMatch(/irrelevance negative/i);
+    expect(skill.body).toMatch(/non-statistical|independent of n|not volume/i);
+  });
+
+  it("hard-zeroes budget, bidding and status in launch phase", () => {
+    expect(skill.body).toMatch(/hard-zero/i);
+  });
+
+  it("caps irrelevance negatives at 25", () => {
+    expect(skill.body).toMatch(/25/);
+  });
+
+  it("declares a minimum n for the journey diagnosis and forbids per-person stories", () => {
+    expect(skill.body).toMatch(/\b20\b/);
+    expect(skill.body).toContain("journeys");
+    expect(skill.body).toMatch(/PII|drop-off shape/i);
+  });
+});
