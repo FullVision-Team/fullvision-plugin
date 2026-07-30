@@ -48,3 +48,19 @@ describe("safety rails", () => {
     },
   );
 });
+
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { ROOT } from "./lib/skills";
+
+describe("coverage scoping rule", () => {
+  const rails = readFileSync(join(ROOT, "shared/safety-rails.md"), "utf8");
+
+  it("tells skills to gate on the coverage their own evidence rests on", () => {
+    expect(rails).toMatch(/scope.{0,40}coverage|coverage.{0,40}your own evidence/i);
+  });
+
+  it("says a workspace-wide verdict is context, not an automatic stop", () => {
+    expect(rails).toMatch(/not an automatic stop|context, never a stop|never a stop/i);
+  });
+});
