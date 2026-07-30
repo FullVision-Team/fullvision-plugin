@@ -46,13 +46,21 @@ not unprofitable — FullVision simply was not watching. Never let it into a ROA
 `ads-leaderboard` already exposes the `clipped_*` (measurable window) and `full_*` (lifetime)
 column split; use `clipped_*` for any decision and say which you used.
 
-**Attribution windows differ per platform and are not comparable raw.**
+**Attribution windows differ per platform and are not comparable raw.** The table below is the
+*platform-reported* window — what each platform credits and can receive back. These are the
+numbers to normalise when comparing across platforms.
 
 | Platform | Window | What it means |
 |---|---|---|
 | Google | 90-day click age | Actual charges within 90 days of the click |
 | Meta | 7-day upload wall | First-charge pLTV × the workspace `pltv_multiplier`, not realised LTV |
 | LinkedIn | 365-day | Real 12-month LTV; the wall is upload lag only |
+
+**FullVision's own attribution is unbounded.** It is person-stitched first touch with no time
+limit — a charge is credited to the visit that started it, however long ago that was. That is
+what we judge on: every ROAS, payer count and waste call in this plugin reads unbounded
+FullVision revenue, never a platform's number. A platform's window is a fact about that
+platform; it never becomes our lookback.
 
 Never rank campaigns across platforms on raw ROAS. Compare within a platform, or state the
 window you normalised to and why.

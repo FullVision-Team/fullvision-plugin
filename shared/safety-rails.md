@@ -79,3 +79,15 @@ If a skill's `writes` server is not connected, the skill runs the **entire** ana
 emits the change-list as an artifact with per-change manual instructions. It reports this as
 a normal outcome, not a failure. This is the permanent mode for Google Ads (§ the official
 server is read-only) and for `build-audience` in v1.
+
+## 10. Gate on the coverage your evidence rests on
+
+`check_data_health` returns three **workspace-global** figures. Report the global verdict for
+context, never a stop in itself — then scope the gate to the coverage your own evidence
+actually rests on. A skill whose primary evidence is client-side pageviews is not blocked by
+low Stripe identity coverage; a skill whose evidence is payer counts is. Missing identity can
+only **lose** conversions, never invent them, so low coverage biases toward **false negatives**
+— a reason to withhold a destructive proposal, not an automatic stop on reporting.
+
+**Failure this prevents:** a skill that aborts on a global red goes silent every week over data
+it never reads.

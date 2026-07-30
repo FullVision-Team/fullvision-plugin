@@ -18,7 +18,14 @@ Read `shared/reading-fullvision-data.md` before calling anything.
 
 ## Steps
 
-1. **Precondition:** call `fullvision:check_data_health`. On red, abort.
+1. **Health context, never a gate.** Call `fullvision:check_data_health` and carry its verdict in
+   the report header **as context** (`shared/safety-rails.md` §10). This skill writes nothing —
+   `fix-page` owns the write path — so a workspace-global verdict cannot gate it; never abort on
+   one. Name the bias: positions, impressions and CTR from `view:gsc-striking-candidates` and
+   `view:gsc-performance` are unaffected by identity coverage, but the step-4 `projected_revenue`
+   ranking rests on `view:page-customers`. Missing identity only loses attributed revenue, never
+   invents it, so a degraded `health-identity-recon` or `health-checkout-coverage` biases the
+   revenue-at-stake ranking **low**. Report that column as a **floor**.
 2. **Pull the striking-distance set.** `fullvision:query_view` on
    `view:gsc-striking-candidates`. This view exists precisely for this job and nothing
    currently uses it.
@@ -68,7 +75,6 @@ title/meta.
 
 ## Refuse when
 
-- `fullvision:check_data_health` returns red.
 - No `gsc_connection` exists for the workspace.
 - Fewer than 3 pages clear the thresholds — say the account is too small for this sweep.
 - The page's problem is conversion rather than CTR — route to `find-leaky-pages` instead of

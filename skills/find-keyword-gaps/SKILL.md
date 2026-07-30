@@ -16,8 +16,14 @@ Read `shared/reading-fullvision-data.md` before calling anything.
 
 ## Steps
 
-1. **Precondition:** call `fullvision:check_data_health`. On red, abort — query→revenue linkage runs through
-   the same identity graph.
+1. **Health context, never a gate.** Call `fullvision:check_data_health` and carry its verdict in
+   the report header **as context** (`shared/safety-rails.md` §10). This skill writes nothing, so
+   a workspace-global verdict cannot gate it — never abort on one. The query→revenue linkage does
+   run through the same identity graph, but that is a caveat, not a stop: GSC impressions, clicks
+   and positions are unaffected, and missing identity only loses payers, never invents them. A
+   degraded `health-identity-recon` or `health-checkout-coverage` therefore biases the step-5
+   revenue ranking **low** and drags queries toward Hollow and Unproven — the skill under-claims
+   opportunity rather than inventing it. Report the revenue column as a **floor**.
 2. **Pull the demand surface.** `fullvision:query_view` on `view:gsc-content-gap-candidates`
    for queries the site surfaces for without dedicated content, and
    `view:gsc-query-trend` for direction of travel. A query that is decaying is a different
@@ -63,7 +69,6 @@ attributed revenue, bucket, and the recommended next step.
 
 ## Refuse when
 
-- `fullvision:check_data_health` returns red.
 - No `gsc_connection` exists for the workspace — this skill has no input without Search
   Console; say so and point at connecting it.
 - Fewer than 10 queries clear the impression threshold. The site is too young for a sweep;

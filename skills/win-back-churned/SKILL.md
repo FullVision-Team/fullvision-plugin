@@ -20,8 +20,14 @@ Read `shared/reading-fullvision-data.md`, `shared/safety-rails.md` and
 
 ## Steps
 
-1. **Precondition:** call `fullvision:check_data_health`. On red, abort — you would be mailing people based on
-   a broken identity graph, which is how the wrong human gets someone else's email.
+1. **Precondition — the identity gate, and it is hard.** Call `fullvision:check_data_health`.
+   Report the global verdict as context (`shared/safety-rails.md` §10), then **stop** if
+   `health-identity-recon` or `health-checkout-coverage` is degraded: you would be mailing
+   people on a broken identity graph, which is how the wrong human gets someone else's email.
+   §10's false-negative carve-out does not reach this skill — a bad identity join here does not
+   understate a ranking, it **misdirects mail** to a named person, and an unsubscribe and a spam
+   complaint are not recoverable next run. `health-event-coverage` does not gate this skill; no
+   segment below rests on pageviews.
 2. **Define churn correctly.** Call `fullvision:get_guidance` with domain `churn` **first**.
    Churn is not `subscription.status = 'canceled'`; delinquent churn, voluntary churn and
    contraction are different populations with different win-back odds, and a failed payment is
@@ -87,7 +93,9 @@ single blended number, because the four segments have genuinely different odds.
 
 ## Refuse when
 
-- `fullvision:check_data_health` returns red.
+- `health-identity-recon` or `health-checkout-coverage` is degraded (step 1) — the harm is a
+  misdirected email to a real person, not an understated ranking, so this stop is hard where a
+  read-only skill's is not.
 - The marketing-consent field is absent from the data.
 - No segment clears the 25-contact minimum.
 - The account churned fewer than **40 customers** in total over the window — at that volume

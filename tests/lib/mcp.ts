@@ -37,22 +37,38 @@ export async function fetchSurface(): Promise<{ tools: string[]; views: string[]
   const listed = await rpc("tools/list", {}, sid);
   const tools = (listed.result.tools as { name: string }[]).map((t) => t.name);
 
-  const called = await rpc(
-    "tools/call",
-    { name: "list_views", arguments: {} },
-    sid,
-  );
-  const raw = called.result.content[0].text as string;
-  const parsed = JSON.parse(raw);
-  const entries: { name: string }[] = Array.isArray(parsed)
-    ? parsed
-    : (parsed.views ?? parsed.data ?? []);
-  return { tools, views: entries.map((v) => v.name) };
+  // `list_views` defaults to the composite reports only; the ~59 raw views need
+  // include_raw. Union both rather than trusting either to be a superset.
+  const views: string[] = [];
+  for (const args of [{}, { include_raw: true }]) {
+    const called = await rpc(
+      "tools/call",
+      { name: "list_views", arguments: args },
+      sid,
+    );
+    views.push(...collectNames(JSON.parse(called.result.content[0].text as string)));
+  }
+  return { tools, views: [...new Set(views)] };
+}
+
+/** Every `name` field in an arbitrarily-shaped catalog payload. */
+export function collectNames(node: unknown): string[] {
+  if (Array.isArray(node)) return node.flatMap(collectNames);
+  if (node && typeof node === "object") {
+    const o = node as Record<string, unknown>;
+    // Stop at the entry's own `name` so nested metric names don't leak. Over-
+    // collecting is the safe side anyway: contract assertions only check that a
+    // referenced view is *contained* in this list, so extras loosen, while a
+    // missing name fails a skill that is actually correct.
+    if (typeof o.name === "string") return [o.name];
+    return Object.values(o).flatMap(collectNames);
+  }
+  return [];
 }
 
 /** Every `fullvision:<tool>` and `view:<name>` reference in a skill body. */
 export function extractReferences(body: string): { tools: string[]; views: string[] } {
-  const tools = [...body.matchAll(/`fullvision:([a-z_]+)`/g)].map((m) => m[1]);
+  const tools = [...body.matchAll(/`fullvision:([a-z0-9_-]+)`/g)].map((m) => m[1]);
   const views = [...body.matchAll(/`view:([a-z0-9-]+)`/g)].map((m) => m[1]);
   return { tools: [...new Set(tools)], views: [...new Set(views)] };
 }

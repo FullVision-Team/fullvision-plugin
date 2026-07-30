@@ -101,10 +101,12 @@ one line without re-running anything.
 data points. Every skill declares a minimum n and says so when it is not met, rather than
 producing a confident answer from noise.
 
-**It is honest about attribution windows.** Google judges on 90-day click age, Meta on a
-7-day upload wall with predicted LTV, LinkedIn on 365 days. Skills never compare raw ROAS
-across platforms, and spend from before FullVision started measuring is reported as
-unmeasurable, not unprofitable.
+**It is honest about attribution windows.** Each platform reports on its own: Google a 90-day
+click age, Meta a 7-day upload wall with predicted LTV, LinkedIn 365 days. Those are limits on
+what each platform can credit and receive — not lookbacks to judge by. FullVision's own
+attribution is person-stitched first-touch and unbounded, and that is what every skill judges
+on. Skills never compare raw ROAS across platforms, and spend from before FullVision started
+measuring is reported as unmeasurable, not unprofitable.
 
 **Consent is a hard gate.** No ad-platform audience upload without a verifiable consent flag
 per contact — hashing is not a legal basis. Email activation is the default for EU B2B.

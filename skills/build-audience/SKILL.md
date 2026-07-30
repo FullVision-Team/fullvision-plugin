@@ -105,4 +105,9 @@ Audience create/sync is not exposed on the FullVision MCP surface. Per
 - The segment cannot clear any destination's floor, including email.
 - The description implies a special-category segment (health, ethnicity, political, sexual
   orientation, religion, trade-union membership) — refuse outright, in any jurisdiction.
-- `fullvision:check_data_health` returns red — segment membership would be built on broken identity data.
+- `fullvision:check_data_health` reports **`health-identity-recon`** or
+  **`health-checkout-coverage`** degraded — segment membership would rest on a broken identity
+  graph, and this change-list targets real people in ad platforms and inboxes. Report the global
+  verdict as context per `shared/safety-rails.md` §10, but gate on these two checks. The harm is
+  the wrong human landing in someone else's audience, not an understated ranking, so §10's
+  false-negative carve-out does not reach it — this stop is hard where a read-only skill's is not.
