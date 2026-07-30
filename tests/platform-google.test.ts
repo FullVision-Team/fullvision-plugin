@@ -11,7 +11,12 @@ describe("google platform reference: attribution window", () => {
 
   it("keeps the 90-day click age, scoped to what Google can receive", () => {
     expect(googleRef).toMatch(/90-day click age/i);
-    expect(googleRef).toMatch(/upload|receive|cannot be uploaded/i);
+    // Anchored to the paragraph that states it — an unscoped match is satisfied by the
+    // "upload" wording in the conversion-feedback-loop section and proves nothing.
+    const paragraph = googleRef
+      .split(/\n\s*\n/)
+      .find((p) => /90-day click age/i.test(p)) ?? "";
+    expect(paragraph).toMatch(/upload|receive|cannot be uploaded/i);
   });
 
   it("states that FullVision's own attribution is unbounded", () => {
