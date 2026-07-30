@@ -6,7 +6,8 @@ const cfg = JSON.parse(readFileSync(join(ROOT, ".mcp.json"), "utf8"));
 const reviewRecord = readFileSync(join(ROOT, "docs/mcp-servers.md"), "utf8");
 
 // Hosted, first-party/official servers have no artifact to pin — they may float.
-const HOSTED = new Set(["fullvision", "webflow", "brevo"]);
+// `fullvision` is the only bundled server.
+const HOSTED = new Set(["fullvision"]);
 
 describe("supply chain", () => {
   const entries = Object.entries(cfg.mcpServers) as [string, Record<string, unknown>][];

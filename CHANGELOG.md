@@ -108,6 +108,16 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   pipx/Python toolchain, gcloud ADC and `GOOGLE_ADS_DEVELOPER_TOKEN` are gone. Ad-platform
   vendor servers: one → zero. **This requires the gateway deploy landing first (full_db +
   full_distrib PRs) — do not release until those are live.**
+- **The Webflow and Brevo integrations.** Both MCP servers left the bundle in `36863cf`; the
+  skills that used them still declared them in frontmatter, which is what the two stale
+  `frontmatter.test.ts` failures were reporting. This removes the declarations and the code
+  paths behind them, clearing both failures. **Neither skill is deleted.** `fix-page` keeps its
+  GitHub PR path — that path never needed an MCP server, so it now declares `writes: []` and
+  reads as the single-path skill it is. `win-back-churned` keeps its entire analysis, every
+  threshold and every hard gate, and its former no-Brevo degradation path is promoted to its
+  only path: it emits the segments, the per-segment brief and an explicit ESP-suppression
+  instruction as an artifact, and writes nothing anywhere. `build-audience` loses Brevo from its
+  destination list; `fix-striking-distance` now hands off to a GitHub PR only.
 
 ### Changed
 - **Dropped the `fv-` prefix from every skill and agent name** (`fv-cut-wasted-spend` →

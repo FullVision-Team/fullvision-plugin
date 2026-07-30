@@ -49,12 +49,12 @@ time in FullVision → Settings → API keys.
 Prefer to manage the key yourself? Export `FULLVISION_API_KEY=sk_…` instead — it takes
 precedence over the saved credential.
 
-Optional, per server you want to use: `BREVO_API_KEY`. Webflow authenticates in the browser on
-first use. You do not need all of them — every skill degrades gracefully.
+That key is the only credential the plugin needs — every skill degrades gracefully on whatever
+is not connected yet.
 
-**Recommended:** enable deferred tool loading (`ENABLE_TOOL_SEARCH`). This plugin bundles three
-MCP servers, and tool-selection accuracy degrades measurably when a lot of tool schema is
-loaded at once. Deferred loading fetches only the tools a skill actually names.
+**Recommended:** enable deferred tool loading (`ENABLE_TOOL_SEARCH`). The FullVision server
+exposes a large tool surface, and tool-selection accuracy degrades measurably when a lot of
+tool schema is loaded at once. Deferred loading fetches only the tools a skill actually names.
 
 ## Skills
 
@@ -64,11 +64,11 @@ loaded at once. Deferred loading fetches only the tools a skill actually names.
 | `login` | on demand | Connect this machine — browser login, read-only key, no pasting |
 | `google-ads-review` | weekly | The weekly Google session — verify the revenue loop, cut zero-payer spend, stage budget fixes |
 | `find-leaky-pages` | weekly | Pages ranked by revenue lost, not bounce rate |
-| `fix-page` | on demand | Applies the fix — GitHub PR or Webflow write |
+| `fix-page` | on demand | Applies the fix — a GitHub PR against your site repo |
 | `design-page-test` | on demand | Can this page power an A/B test? Usually no, with the numbers |
 | `find-keyword-gaps` | monthly | Queries that impress but never pay, ranked by revenue |
 | `fix-striking-distance` | monthly | Positions 5–20 where a snippet rewrite moves real money |
-| `win-back-churned` | monthly | Lapsed customers worth recovering → a staged Brevo list |
+| `win-back-churned` | monthly | Lapsed customers worth recovering → segments + brief for your ESP |
 | `build-audience` | on demand | Sized, floor-checked, consent-gated segments (incl. retargeting) |
 
 ## Why there are no "specialist" agents
