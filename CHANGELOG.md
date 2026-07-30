@@ -5,6 +5,39 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+### Fixed
+- **`google-ads-review` no longer judges on a trailing 90-day window.** Google's 90-day click
+  age is a limit on what Google can *receive and count*, not an attribution limit — FullVision
+  attribution is person-stitched first-touch and unbounded. Judging on 90 days understated every
+  campaign and could propose blocking a keyword whose payers convert later. The window is now
+  measurement-start → a **maturity line** derived from the workspace's own p80 click-to-charge
+  lag (60-day fallback below 8 ad-sourced payers). `shared/platforms/google.md` and
+  `shared/reading-fullvision-data.md` now separate platform-reported windows from FullVision's.
+- **`google-ads-review` no longer sources negative-keyword candidates from
+  `view:keyword-performance`.** That view is **Google Search Console** — it mined organic queries
+  and proposed them as *paid* negatives. Search terms now come from GAQL `search_term_view` via
+  `fullvision:google_ads_search` and nowhere else; `view:ads-leaderboard?level=keyword` supplies
+  the paid keyword grain.
+- **`google-ads-review` no longer aborts on a workspace-global `check_data_health` red.** All
+  three checks are workspace-global and none is ads-scoped. The verdict is now reported as
+  context; the destructive path gates on ads-scoped gclid coverage (`obs_gclid_clicks /
+  g_clicks`, floor **70%**), and below the floor every proposal resting on a payer count —
+  negative keywords, budget and campaign status — is withheld. New `shared/safety-rails.md` §10
+  generalises the rule, and seven other skills were rescoped to follow it: the four read-only
+  ones no longer abort at all, while `win-back-churned` and `build-audience` keep a hard stop
+  scoped to identity coverage, because a bad identity join there misdirects mail to a real person.
+- **`google-ads-review` gains a launch phase.** Below 5 qualifying terms it previously refused to
+  run — exactly when a relaunching account most needs watching. It now runs diagnostics plus
+  non-statistical irrelevance negatives (capped at 25) with budget, bidding and status
+  hard-zeroed, and a `fullvision:journeys` drop-off diagnosis above a 20-person floor.
+- **`google-ads-review` declares its behaviour when the Google Ads surface is unavailable.** On
+  `ready: false` it is a read-only run that **names every skipped GAQL diagnostic** rather than
+  returning a shorter list that reads as "nothing found", and fails safe to launch phase since
+  the qualifying-term count cannot be derived without GAQL.
+- **The live contract suite's view half checked nothing.** `fetchSurface()` called `list_views`
+  without `include_raw`, so it saw only the ~9 composite reports and every skill referencing one
+  of the ~59 raw views failed against a catalog that never contained it.
+
 ### Added
 - **Google Ads ad-surface writes** (gateway tools shipped from `full_distrib`, not this repo):
   `fullvision:google_propose_sitelinks`, `fullvision:google_propose_callouts` and
